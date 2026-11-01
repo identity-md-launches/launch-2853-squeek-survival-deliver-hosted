@@ -384,6 +384,40 @@ test("corrupt-section recovery preserves other sections", () => {
   assert.equal(result.state.name, "Test");
   assert.ok(result.recovered.includes("run"));
 });
+test("damaged round fields recover only the round section", () => {
+  const corruptions = [
+    (r) => (r.target = "not-a-block"),
+    (r) => (r.baseBlock = 42),
+    (r) => (r.seedType = "MAINNET"),
+    (r) => (r.pausedAt = "soon"),
+    (r) => (r.replayStart = null),
+    (r) => (r.env.frozenAt = "x"),
+    (r) => (r.env.observedAt = "not a date"),
+    (r) => (r.env.cooldown = undefined),
+    (r) => (r.sigma = NaN),
+    (r) => (r.aiZone = "Moon"),
+    (r) => (r.race = { ...r.race, zone: undefined }),
+    (r) => (r.n = 0),
+  ];
+  for (const corrupt of corruptions) {
+    const s = fresh();
+    round(s);
+    s.run.streak = 4;
+    s.name = "Keep";
+    const raw = JSON.parse(JSON.stringify(s));
+    corrupt(raw.round);
+    const result = E.recover(JSON.parse(JSON.stringify(raw)), at);
+    assert.deepEqual([...result.recovered], ["round"], String(corrupt));
+    assert.equal(result.state.round, null);
+    assert.equal(result.state.run.streak, 4);
+    assert.equal(result.state.name, "Keep");
+  }
+  const ok = fresh();
+  round(ok);
+  ok.round.target = "0x10";
+  ok.round.baseBlock = "0xf";
+  assert.equal(E.recover(JSON.parse(JSON.stringify(ok)), at).recovered.length, 0);
+});
 test("pause/resume persists same seed target and extends timer", () => {
   const s = fresh();
   const r = round(s);

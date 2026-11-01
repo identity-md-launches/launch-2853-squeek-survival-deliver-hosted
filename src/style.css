@@ -550,8 +550,20 @@ summary span {
 .details-body a {
   overflow-wrap: anywhere;
 }
+.contracts .details-body {
+  gap: 4px;
+}
+.contracts .details-body a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: 8px;
+}
 .records-section {
   padding-bottom: 24px;
+}
+.records-section td:first-child {
+  overflow-wrap: anywhere;
 }
 .section-heading {
   margin-bottom: 16px;

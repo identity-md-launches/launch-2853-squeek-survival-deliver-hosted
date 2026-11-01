@@ -31,7 +31,7 @@ The sprite and procedural art palettes deliberately remain bronze, amber and cre
 
 Arial, Helvetica, sans-serif is the local prose stack. Monospace is limited to the timer, changing numbers, key hints and pixel arena metadata. No font files are needed. The six-size scale is 12, 16, 20, 24, 32 and 40px, with no more than five sizes visible at one tested width. Weights are 400 and 600, with native heading defaults reaching 700 in the browser.
 
-The main heading is 40px / 1.1 with -1.5px tracking on desktop, 32px / 1.1 with -1px on phones. Section headings are 20px / 1.3. Body copy is 16px / 1.5, labels and metadata 12px / 1.5. Mobile inputs stay 16px. Scores/timers use tabular numbers. Contract addresses and seeds wrap with `overflow-wrap:anywhere`; they are not truncated.
+The main heading is 40px / 1.1 with -1.5px tracking on desktop, 32px / 1.1 with -1px on phones. Section headings are 20px / 1.3. Body copy is 16px / 1.5, labels and metadata 12px / 1.5. Mobile inputs stay 16px. Scores/timers use tabular numbers. Contract addresses, seeds and record player names (`.records-section td:first-child`) wrap with `overflow-wrap:anywhere`; they are not truncated, so a 20-character name fits the 320px table.
 
 ## Layout
 
@@ -54,7 +54,7 @@ Controls and inputs use `--radius:8px`; the game and dialogs use 12px; art and r
 - **Calls and boosters** (`.calls`, `.mode-tabs`, `.boosters`): native buttons with `aria-pressed`; selected calls invert ink/paper; the AI zone and unavailable cooldowns are disabled. Rest, hover, pressed, focus and disabled states are implemented. Explanations and countdowns sit next to the relevant action.
 - **Raid** (`.boss-section`, `.hp-track`): local/week labels and an accessible progressbar. Exact HP stays visible as text; stage/loot labels also communicate status.
 - **Wheelprint** (`#art`, `.art-section`): normalized procedural primitives, persistent seeded groups, clear confirmation and 1080px PNG preview/download. The initial print is explicitly empty, not sample race data.
-- **Disclosure and records** (`details`, `.records-section`): native keyboard disclosure, true empty state and a semantic table of completed local runs. No invented leaderboard entries.
+- **Disclosure and records** (`details`, `.records-section`): native keyboard disclosure, true empty state and a semantic table of completed local runs. Expanded pinned-contract links (`.contracts .details-body a`) are flex rows with a 44px minimum height and 8px block padding, 4px apart. No invented leaderboard entries.
 - **Wallet status** (`.wallet-section`, `.wallet-row`): one EIP-6963 chooser, code/balance/chain states, explicit switch and a gated test action. Pending/unknown/confirmed/failed states are shown without displacing the game.
 - **Dialogs** (`dialog`, `.dialog-heading`): native modal focus containment, Escape/backdrop/close control, focus return, scrolling content; the phone wallet chooser sits near the bottom. Help pauses the local game. Errors use persistent status regions.
 

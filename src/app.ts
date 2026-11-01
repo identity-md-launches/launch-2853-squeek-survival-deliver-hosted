@@ -86,7 +86,11 @@ namespace SqueekApp {
     pngURL: string | null = null,
     lastFrame = 0,
     lastScene = 0,
-    mode = "duel";
+    // the visible call controls follow a saved call, so a restored zone call stays visible
+    mode: "duel" | "zone" =
+      state.round?.call && !["OVER", "UNDER"].includes(state.round.call)
+        ? "zone"
+        : "duel";
   let helpPaused = false,
     lastPhase = "",
     lastArt = "",
@@ -1985,14 +1989,21 @@ namespace SqueekApp {
       (b) =>
         (b.onclick = () => chooseBooster(b.dataset.booster as Squeek.Booster)),
     );
-  button("duelMode").onclick = () => {
-    mode = "duel";
+  /** Switching call type clears a call the new controls cannot show. */
+  function setMode(next: "duel" | "zone") {
+    mode = next;
+    const r = state.round;
+    if (r && r.phase === "PREDICT" && r.call) {
+      const isDuel = r.call === "OVER" || r.call === "UNDER";
+      if (isDuel !== (next === "duel")) {
+        r.call = null;
+        save();
+      }
+    }
     render();
-  };
-  button("zoneMode").onclick = () => {
-    mode = "zone";
-    render();
-  };
+  }
+  button("duelMode").onclick = () => setMode("duel");
+  button("zoneMode").onclick = () => setMode("zone");
   button("lockBtn").onclick = lock;
   button("retryNetwork").onclick = () => {
     statusNext = economyNext = publicCodeNext = rpcNotBefore = seedNext = 0;
@@ -2110,11 +2121,19 @@ namespace SqueekApp {
   }
   document.addEventListener("keydown", (e) => {
     const target = e.target as HTMLElement;
+    // Game shortcuts work while a game control has focus; only editable
+    // fields, open dialogs and modified keys are left alone.
     if (
-      target.matches("input,textarea,select,button,a,summary") ||
+      e.ctrlKey ||
+      e.metaKey ||
+      e.altKey ||
+      e.repeat ||
+      target.closest?.("input,textarea,select,[contenteditable]") ||
       document.querySelector("dialog[open]")
     )
       return;
+    // Enter keeps its native activation on buttons, links and summaries.
+    if (e.key === "Enter" && target.closest?.("button,a,summary")) return;
     const calls: Record<string, Squeek.Call> = {
       "1": "OVER",
       "2": "UNDER",
@@ -2124,8 +2143,12 @@ namespace SqueekApp {
     };
     if (calls[e.key]) {
       e.preventDefault();
-      mode = ["1", "2"].includes(e.key) ? "duel" : "zone";
-      choose(calls[e.key]);
+      const r = state.round;
+      // only switch controls when the call can actually be made
+      if (r && r.phase === "PREDICT" && active() && E.canCall(r, calls[e.key])) {
+        mode = ["1", "2"].includes(e.key) ? "duel" : "zone";
+        choose(calls[e.key]);
+      }
     }
     if (e.key === "Enter") {
       e.preventDefault();
@@ -2272,8 +2295,11 @@ namespace SqueekApp {
     settings.mute ? "Sound off" : "Sound on",
   );
   button("soundBtn").setAttribute("aria-pressed", String(!settings.mute));
-  if (state.round) E.resume(state.round, now());
+  // A restored round resumes only on a visible, unpaused page; a hidden reload
+  // keeps (or starts) its pause so background time never consumes its timers.
+  if (state.round && active()) E.resume(state.round, now());
   if (!state.round && state.run.active) beginRound();
+  if (!active()) E.pause(state.round, now());
   if (state.counts.participated === 0) say("first");
   else if (returned) say("return");
   else preDialogue();

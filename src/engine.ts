@@ -358,6 +358,46 @@ namespace Squeek {
       name: "",
     };
   }
+  /** Fields of a saved round consumed by render, seeding and settlement. */
+  function validRoundDetail(v: any): boolean {
+    const finite = (n: any) => typeof n === "number" && Number.isFinite(n);
+    const hexBlock = (x: any) =>
+      x === null || (typeof x === "string" && /^0x[0-9a-fA-F]{1,64}$/.test(x));
+    const e = v.env;
+    return (
+      hexBlock(v.target) &&
+      hexBlock(v.baseBlock) &&
+      ["WAITING", "SEPOLIA", "LOCAL"].includes(v.seedType) &&
+      finite(v.replayStart) &&
+      v.replayStart >= 0 &&
+      (v.pausedAt === null || (finite(v.pausedAt) && v.pausedAt >= 0)) &&
+      finite(v.sigma) &&
+      v.sigma > 0 &&
+      ["Sprint", "Cruise", "Marathon"].includes(v.aiZone) &&
+      /^\d{4}-W\d{2}$/.test(v.week) &&
+      (v.outcome === null ||
+        ["WIN", "LOSS", "PUSH", "DRAW", "TIE"].includes(v.outcome)) &&
+      finite(v.damage) &&
+      v.damage >= 0 &&
+      Number.isInteger(v.n) &&
+      v.n >= 1 &&
+      typeof v.skipped === "boolean" &&
+      finite(e.cooldown) &&
+      e.cooldown >= 0 &&
+      finite(e.frozenAt) &&
+      e.frozenAt >= 0 &&
+      (e.observedAt === null ||
+        (typeof e.observedAt === "string" &&
+          Number.isFinite(Date.parse(e.observedAt)))) &&
+      typeof e.epoch === "string" &&
+      typeof e.work === "string" &&
+      typeof e.reason === "string" &&
+      // a seeded round must carry its seed and race; an unseeded one neither
+      (v.seed === null) === (v.race === null) &&
+      (v.seed === null || v.seedType !== "WAITING") &&
+      (!v.applied || v.race !== null)
+    );
+  }
   export function recover(
     raw: any,
     now: number,
@@ -479,12 +519,22 @@ namespace Squeek {
                 (v.seed === null || typeof v.seed === "string") &&
                 (v.race === null ||
                   (validNumber(v.race.D) &&
+                    validNumber(v.race.peakRPM) &&
+                    ["Sprint", "Cruise", "Marathon"].includes(v.race.zone) &&
+                    typeof v.race.tier === "string" &&
                     Array.isArray(v.race.ticks) &&
                     v.race.ticks.length === 24 &&
                     v.race.ticks.every(
-                      (t) => Number.isFinite(t.v) && t.v >= 0.6 && t.v <= 6,
+                      (t) =>
+                        t &&
+                        Number.isFinite(t.v) &&
+                        t.v >= 0.6 &&
+                        t.v <= 6 &&
+                        Number.isFinite(t.a) &&
+                        typeof t.burst === "boolean",
                     ))) &&
-                typeof v.applied === "boolean");
+                typeof v.applied === "boolean" &&
+                validRoundDetail(v));
             break;
           case "applied":
             ok =

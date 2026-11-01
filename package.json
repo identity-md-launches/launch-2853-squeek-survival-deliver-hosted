@@ -10,6 +10,7 @@
     "test": "node tests/engine.test.mjs",
     "test:browser": "node tests/browser.test.mjs",
     "test:scenarios": "node tests/scenarios.test.mjs",
+    "test:revision": "node tests/revision.test.mjs",
     "check:live": "node scripts/live-check.mjs",
     "share-image": "node scripts/share-image.mjs"
   },
