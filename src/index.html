@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en" data-theme="cream">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Squeek Survival · Beat Robo-Squeek</title>
+    <meta
+      name="description"
+      content="Keep the wheel alive in a guest-first prediction game. Duel Robo-Squeek, raid a local boss, and turn every race into art. Virtual races. No token rewards."
+    />
+    <meta
+      property="og:title"
+      content="Squeek Survival · Keep the wheel alive"
+    />
+    <meta
+      property="og:description"
+      content="Predict the race. Beat the robot. Make your mark."
+    />
+    <meta property="og:image" content="./share.png" />
+    <meta name="theme-color" content="#f4f0e7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23d45520'/%3E%3Cpath d='M14 24h6V14h12v8h12v-6h10v24h-6v10H22V44h-8z' fill='%23fff1ce'/%3E%3Cpath d='M42 26h6v6h-6zM22 42h14v6H22z' fill='%23272420'/%3E%3C/svg%3E"
+    />
+    <style>
+      /* INLINE_CSS */
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#game">Skip to game</a>
+    <header class="site-header">
+      <a class="brand" href="#game" aria-label="Squeek Survival home"
+        ><svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+          <circle
+            cx="18"
+            cy="18"
+            r="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+          <path d="M10 16h4v-5h5v5h7v9H12v-4h-2z" fill="currentColor" />
+          <path d="M22 18h2v2h-2z" fill="var(--bg)" /></svg
+        ><span>Squeek<span class="brand-second">Survival</span></span></a
+      >
+      <nav aria-label="Game utilities">
+        <button
+          id="helpBtn"
+          class="icon-button"
+          aria-label="How to play"
+          title="How to play"
+        >
+          ?</button
+        ><button
+          id="soundBtn"
+          class="icon-button"
+          aria-label="Sound off"
+          aria-pressed="false"
+          title="Sound off"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <path d="M10 5 5 9H2v6h3l5 4V5ZM15 9l6 6m0-6-6 6" />
+          </svg></button
+        ><button
+          id="themeBtn"
+          class="icon-button"
+          aria-label="Use charcoal theme"
+          title="Change theme"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="7" />
+            <path d="M12 5v14" />
+          </svg></button
+        ><button id="connectBtn" class="wallet-button">
+          Connect<span class="desktop-only"> wallet</span>
+        </button>
+      </nav>
+    </header>
+    <main id="game">
+      <div class="intro">
+        <div>
+          <h1>Beat Robo-Squeek.</h1>
+          <p>Keep the wheel alive.</p>
+        </div>
+        <span class="guest-label">Guest play · No wallet needed</span>
+      </div>
+      <p id="storageNotice" class="notice" role="status" hidden></p>
+      <div class="game-grid">
+        <div class="play-column">
+          <section class="game-machine" aria-label="Prediction duel">
+            <div class="hud">
+              <div>
+                <span class="small muted">Your run</span>
+                <div id="lives" class="lives" aria-label="3 lives">● ● ●</div>
+              </div>
+              <div>
+                <span class="small muted">Streak</span
+                ><strong id="streak">0</strong>
+              </div>
+              <div>
+                <span class="small muted">Local score</span
+                ><strong id="score">0</strong>
+              </div>
+              <button id="pauseBtn" class="quiet">Pause</button>
+            </div>
+            <div class="arena-top">
+              <span id="wheelStatus" class="status-dot">PRACTICE</span
+              ><span class="small" id="roundLabel">Round 01</span
+              ><span class="small" id="seedBadge">Seed · WAITING</span>
+            </div>
+            <div class="arena">
+              <canvas
+                id="arena"
+                width="900"
+                height="400"
+                role="img"
+                aria-label="Pixel hamster in a wheel facing Robo-Squeek. Virtual race distance appears below."
+              ></canvas>
+              <div class="arena-labels">
+                <span>You + the wheel</span><span>Robo-Squeek</span>
+              </div>
+              <div id="raceReadout" class="race-readout" hidden></div>
+            </div>
+            <div class="speech">
+              <span class="mood-icon" aria-hidden="true">▦</span>
+              <p id="dialogue">One wheel. Three lives. Your call.</p>
+            </div>
+            <div class="call-panel">
+              <div class="call-heading">
+                <h2 id="phaseTitle">Make your prediction</h2>
+                <span id="timer" class="timer" aria-label="12 seconds remaining"
+                  >12s</span
+                >
+              </div>
+              <div class="ai-line">
+                <span
+                  >Robo calls <strong id="aiNumber">468</strong
+                  ><span class="muted"> D</span></span
+                ><span id="aiZone" class="small muted">Cruise zone</span>
+              </div>
+              <div class="mode-tabs" role="group" aria-label="Prediction mode">
+                <button id="duelMode" aria-pressed="true">Over / Under</button
+                ><button id="zoneMode" aria-pressed="false">Pick a zone</button>
+              </div>
+              <div
+                id="duelCalls"
+                class="calls"
+                role="group"
+                aria-label="Choose prediction"
+              >
+                <button data-call="OVER">
+                  <span class="call-icon" aria-hidden="true">↗</span
+                  ><span>Over <small>Beat Robo’s distance</small></span
+                  ><kbd>1</kbd></button
+                ><button data-call="UNDER">
+                  <span class="call-icon" aria-hidden="true">↘</span
+                  ><span>Under <small>Finish below it</small></span
+                  ><kbd>2</kbd>
+                </button>
+              </div>
+              <div
+                id="zoneCalls"
+                class="calls zone-calls"
+                role="group"
+                aria-label="Choose a zone"
+                hidden
+              >
+                <button data-call="Sprint">
+                  Sprint<small>&lt;436 D</small></button
+                ><button data-call="Cruise">
+                  Cruise<small>436–499 D</small></button
+                ><button data-call="Marathon">
+                  Marathon<small>500+ D</small>
+                </button>
+              </div>
+              <p id="zoneHint" class="small muted" hidden>
+                Robo’s announced zone is unavailable. Both wrong is a draw.
+              </p>
+              <div class="booster-heading">
+                <span class="small muted">Optional booster</span
+                ><span id="multiplier" class="small">Damage ×1.000</span>
+              </div>
+              <div
+                class="boosters"
+                role="group"
+                aria-label="Choose one optional booster"
+              >
+                <button data-booster="Shield" aria-pressed="false">
+                  <svg
+                    viewBox="0 0 20 20"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    aria-hidden="true"
+                  >
+                    <path d="m10 2 7 3v5c0 4-7 8-7 8s-7-4-7-8V5z" /></svg
+                  ><span>Shield<small>Save lives</small></span></button
+                ><button data-booster="Double Down" aria-pressed="false">
+                  <span aria-hidden="true" class="booster-symbol">×2</span
+                  ><span>Double down<small>Double stakes</small></span></button
+                ><button data-booster="Insight" aria-pressed="false">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    aria-hidden="true"
+                  >
+                    <path d="M1 10s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z" />
+                    <circle cx="10" cy="10" r="2" /></svg
+                  ><span>Insight<small>Read the odds</small></span>
+                </button>
+              </div>
+              <p id="insight" class="small muted" hidden></p>
+              <button id="lockBtn" class="primary" disabled>
+                Choose a call to lock in <span aria-hidden="true">→</span>
+              </button>
+              <p id="roundMessage" class="small muted control-hint">
+                Virtual distance D decides the duel. Real RPM boosts damage.
+              </p>
+              <div id="result" class="result" role="status" hidden></div>
+            </div>
+          </section>
+          <section class="telemetry-section">
+            <details>
+              <summary>
+                Under the wheel
+                <span class="muted small">Telemetry & seed</span>
+              </summary>
+              <div class="details-body">
+                <p id="telemetryCurrent"></p>
+                <p id="telemetryFrozen"></p>
+                <p id="economyState"></p>
+                <p id="targetInfo"></p>
+                <p id="seedInfo" class="break"></p>
+                <p class="small muted">
+                  The hardware sample and Robo’s call freeze before prediction.
+                  New samples affect the next round. Daily hardware distance
+                  never becomes race D.
+                </p>
+                <button id="retryNetwork" class="quiet">Retry network</button>
+              </div>
+            </details>
+          </section>
+          <section class="records-section">
+            <div class="section-heading">
+              <h2>Your local records</h2>
+              <span class="small muted">This device only</span>
+            </div>
+            <div id="recordsEmpty" class="empty-records">
+              Your first run starts here. Finish a run to set a record.
+            </div>
+            <table id="recordsTable" hidden>
+              <caption class="sr-only">
+                Top ten completed runs on this device
+              </caption>
+              <thead>
+                <tr>
+                  <th>Player / date</th>
+                  <th>Best streak</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody id="recordsBody"></tbody>
+            </table>
+            <div class="run-actions">
+              <button id="endRun" class="quiet">End run</button
+              ><button id="resetAI" class="quiet">Reset Robo’s memory</button
+              ><button id="newRun" class="quiet" hidden>Start new run</button>
+            </div>
+          </section>
+        </div>
+        <aside class="side-column">
+          <section class="boss-section">
+            <div class="section-heading">
+              <h2>The weekly raid</h2>
+              <span id="bossWeek" class="small muted"></span>
+            </div>
+            <div class="boss-title">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 32 32"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14 2h4v4h8v4h4v16h-4v4H6v-4H2V10h4V6h8z"
+                  fill="var(--accent)"
+                />
+                <path d="M8 12h16v10H8z" fill="var(--ink)" />
+                <path d="M10 14h4v4h-4zm8 0h4v4h-4z" fill="var(--bg)" />
+                <path d="M12 24h8v2h-8z" fill="var(--ink)" />
+              </svg>
+              <div>
+                <h3>Robo-Squeek</h3>
+                <p class="small muted">LOCAL RAID - this device</p>
+              </div>
+            </div>
+            <div class="hp-label">
+              <strong id="bossHP">50,000</strong
+              ><span class="small muted">/ 50,000 HP</span
+              ><span id="loot" class="small">Loot ×1</span>
+            </div>
+            <div
+              class="hp-track"
+              role="progressbar"
+              id="bossProgress"
+              aria-label="Boss health"
+              aria-valuemin="0"
+              aria-valuemax="50000"
+              aria-valuenow="50000"
+            >
+              <div id="hpFill"></div>
+            </div>
+            <p id="bossStage" class="small muted">
+              A fresh robot. A whole week of trouble.
+            </p>
+          </section>
+          <section class="art-section">
+            <div class="section-heading">
+              <h2>Your wheelprint</h2>
+            </div>
+            <canvas
+              id="art"
+              width="600"
+              height="600"
+              role="img"
+              aria-label="Your procedural wheelprint, built from settled races"
+            ></canvas>
+            <div class="art-caption">
+              <span id="artCount">Waiting for your first mark</span
+              ><span aria-hidden="true">↙ 001</span>
+            </div>
+            <label for="playerName" class="small"
+              >Name your wheelprint <span class="muted">(optional)</span></label
+            ><input
+              id="playerName"
+              maxlength="20"
+              autocomplete="nickname"
+              placeholder="GUEST"
+            /><button id="exportBtn" class="primary" disabled>
+              Save wheelprint <span class="small">1080 × 1080 PNG</span>
+            </button>
+            <div class="art-controls">
+              <button id="clearArt" class="quiet">New canvas</button
+              ><span class="small muted">Made by your races.</span>
+            </div>
+          </section>
+          <section id="walletPanel" class="wallet-section">
+            <div class="section-heading">
+              <h2>Optional wallet</h2>
+              <span class="small muted">Sepolia</span>
+            </div>
+            <p class="small muted">
+              Connect whenever you like. Guest play is always available.
+            </p>
+            <p id="walletAccount" class="break small"></p>
+            <p id="walletBalance" class="small">SQK balance · Unknown</p>
+            <p id="codeStatus" class="small muted">
+              Pinned contracts have not been checked.
+            </p>
+            <button id="switchChain" class="quiet" hidden>
+              Switch to Sepolia</button
+            ><button id="disconnectBtn" class="quiet" hidden>
+              Disconnect wallet
+            </button>
+            <p class="small muted tx-explanation">
+              0 SQK to yourself on Sepolia; test ETH gas. No on-chain game save
+              or guaranteed Tester badge.
+            </p>
+            <button id="sendBtn" class="outline-button" disabled>
+              Send test transaction
+            </button>
+            <p id="txHint" class="small muted">
+              Unlocks after one settled participated round.
+            </p>
+            <p id="walletMessage" class="small" role="status"></p>
+            <div id="txStatus" class="small break" role="status"></div>
+            <button id="checkTx" class="quiet" hidden>Check status</button>
+            <details class="contracts">
+              <summary>Pinned contracts</summary>
+              <div id="contractLinks" class="details-body small"></div>
+            </details>
+          </section>
+        </aside>
+      </div>
+      <footer>
+        <span class="footer-brand">Squeek Survival</span>
+        <p>Virtual races. Local cosmetic scores. No token rewards.</p>
+        <button id="rulesBtn" class="quiet">Game rules</button>
+      </footer>
+    </main>
+    <div
+      class="sr-only"
+      id="announcer"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+    <dialog id="helpDialog" aria-labelledby="helpTitle">
+      <div class="dialog-heading">
+        <h2 id="helpTitle">A little wheel. A big rival.</h2>
+        <button class="icon-button close-dialog" aria-label="Close help">
+          ×
+        </button>
+      </div>
+      <p>
+        Make a call on a virtual race. Keep three lives alive and chip away at
+        your device’s weekly boss.
+      </p>
+      <ol class="tutorial">
+        <li>
+          <strong>Read Robo’s call.</strong> Pick Over or Under its distance, or
+          pick a different zone.
+        </li>
+        <li>
+          <strong>Lock in within 12 seconds.</strong> Add one booster if you
+          like. No pick means a free skip.
+        </li>
+        <li>
+          <strong>Watch the wheel.</strong> A future Sepolia block seeds the
+          race. Offline? A cryptographic local seed takes over within 45
+          seconds.
+        </li>
+        <li>
+          <strong>Win, hit, repeat.</strong> Hardware RPM affects damage, never
+          the virtual finish. Save the art your races create.
+        </li>
+      </ol>
+      <details>
+        <summary>Lives, boosters & scoring</summary>
+        <p>
+          Over / Under equality is a push. In Zone mode, only you right wins;
+          only Robo right loses; both wrong draws; both right ties. Neutral
+          results keep your streak and lives.
+        </p>
+        <p>
+          Shield prevents life loss, but a loss still resets your streak. Double
+          down doubles win damage and life loss. Insight shows historical spread
+          and Robo’s zone accuracy. Boosters are spent at lock, including
+          neutral results. Shield rests for two participated rounds when live
+          and still, otherwise three. Other boosters rest for three. Skips do
+          not count.
+        </p>
+        <p>
+          Damage = round(D × (1 + 0.1 × min(win streak, 10)) × frozen RPM
+          multiplier × double down). Moving hardware adds up to 25%; 60 RPM
+          gives ×1.125. Score = round((applied damage + 100 × best streak) ×
+          highest raid loot multiplier encountered).
+        </p>
+        <p>
+          Raid health resets Monday 00:00 UTC using the ISO week year. A round
+          belongs to the week it started. Loot at 75%, 50%, 25%, and zero HP
+          rises to ×1.1, ×1.25, ×1.5, and ×2. A defeated boss takes no further
+          damage.
+        </p>
+        <p>
+          Keyboard: 1 / 2 pick Over / Under, 3 / 4 / 5 pick a zone, Enter locks,
+          P pauses. All controls also work with Tab and Space. Pause stops the
+          local timer and animations. Hidden tabs pause requests, timers, and
+          audio.
+        </p>
+        <p>
+          Local records and Robo’s learning stay in this browser. No account,
+          rewards, deposits, or game data on-chain.
+        </p>
+      </details>
+      <button id="startPlaying" class="primary">
+        Let’s roll <span aria-hidden="true">→</span>
+      </button>
+    </dialog>
+    <dialog id="walletDialog" aria-labelledby="walletTitle">
+      <div class="dialog-heading">
+        <h2 id="walletTitle">Connect a wallet</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close wallet chooser"
+        >
+          ×
+        </button>
+      </div>
+      <p class="small muted">
+        Choose your browser wallet. Guest play stays available.
+      </p>
+      <div id="walletList"></div>
+      <p id="noWallet" class="small muted" hidden>
+        No browser wallet found. On your phone, open this page inside your
+        wallet’s browser.
+      </p>
+      <p id="chooserMessage" class="small" role="status"></p>
+    </dialog>
+    <dialog id="previewDialog" aria-labelledby="previewTitle">
+      <div class="dialog-heading">
+        <h2 id="previewTitle">Your wheelprint</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close image preview"
+        >
+          ×
+        </button>
+      </div>
+      <img id="pngPreview" alt="Exported wheelprint with run stats" />
+      <p class="small muted">Long press the image to save on a phone.</p>
+      <a id="pngDownload" class="primary" download="squeek-wheelprint.png"
+        >Download PNG</a
+      >
+    </dialog>
+    <dialog id="confirmDialog" aria-labelledby="confirmTitle">
+      <div class="dialog-heading">
+        <h2 id="confirmTitle">End this run?</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close confirmation"
+        >
+          ×
+        </button>
+      </div>
+      <p id="confirmText"></p>
+      <button id="confirmAction" class="primary">End run & save record</button>
+    </dialog>
+    <script>
+      /* INLINE_JS */
+    </script>
+  </body>
+</html>

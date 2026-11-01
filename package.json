@@ -1,0 +1,20 @@
+{
+  "name": "squeek-survival",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-contained guest-first prediction duels",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "node scripts/preview.mjs",
+    "test": "node tests/engine.test.mjs",
+    "test:browser": "node tests/browser.test.mjs",
+    "test:scenarios": "node tests/scenarios.test.mjs",
+    "check:live": "node scripts/live-check.mjs",
+    "share-image": "node scripts/share-image.mjs"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "playwright": "1.56.1"
+  }
+}

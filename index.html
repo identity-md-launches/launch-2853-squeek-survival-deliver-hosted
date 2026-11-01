@@ -1,0 +1,4445 @@
+<!doctype html>
+<html lang="en" data-theme="cream">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Squeek Survival · Beat Robo-Squeek</title>
+    <meta
+      name="description"
+      content="Keep the wheel alive in a guest-first prediction game. Duel Robo-Squeek, raid a local boss, and turn every race into art. Virtual races. No token rewards."
+    />
+    <meta
+      property="og:title"
+      content="Squeek Survival · Keep the wheel alive"
+    />
+    <meta
+      property="og:description"
+      content="Predict the race. Beat the robot. Make your mark."
+    />
+    <meta property="og:image" content="./dist/share.png" />
+    <meta name="theme-color" content="#f4f0e7" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23d45520'/%3E%3Cpath d='M14 24h6V14h12v8h12v-6h10v24h-6v10H22V44h-8z' fill='%23fff1ce'/%3E%3Cpath d='M42 26h6v6h-6zM22 42h14v6H22z' fill='%23272420'/%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+  color-scheme: light;
+  --bg: #f4f0e7;
+  --surface: #fffaf1;
+  --ink: #2c2923;
+  --muted: #71695c;
+  --line: #d6cbb9;
+  --accent: #ae421a;
+  --button: #c34b1b;
+  --button-ink: #fffaf1;
+  --orange: #e87938;
+  --arena: #292b27;
+  --arena-ink: #f7e6c8;
+  --art: #e7d5b0;
+  --focus: #98401b;
+  --green: #3f674b;
+  --radius: 8px;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--bg);
+}
+:root[data-theme="charcoal"] {
+  color-scheme: dark;
+  --bg: #222420;
+  --surface: #2e302a;
+  --ink: #f7eddb;
+  --muted: #c1b6a3;
+  --line: #56584c;
+  --accent: #ff9b5e;
+  --button: #f39a5f;
+  --button-ink: #25261f;
+  --orange: #f3a269;
+  --art: #e7d5b0;
+  --focus: #ffd3a4;
+  --green: #a9d2aa;
+}
+* {
+  box-sizing: border-box;
+}
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition: none !important;
+}
+body {
+  margin: 0;
+  line-height: 1.5;
+}
+button,
+input,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+input {
+  font: inherit;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+  color: inherit;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: var(--radius);
+  min-height: 44px;
+  font-weight: 600;
+  padding: 10px 16px;
+  line-height: 1.25;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+button:active:not(:disabled) {
+  background: var(--line);
+}
+a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+[hidden] {
+  display: none !important;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+}
+h2,
+h3 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+h3 {
+  font-size: 20px;
+}
+strong {
+  font-weight: 600;
+}
+.small,
+small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.muted {
+  color: var(--muted);
+}
+.break {
+  overflow-wrap: anywhere;
+}
+button small {
+  display: block;
+  font-weight: 400;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  background: var(--surface);
+  padding: 12px;
+  z-index: 50;
+}
+.skip:focus {
+  top: 8px;
+}
+.site-header {
+  max-width: 1320px;
+  margin: auto;
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+}
+.brand svg {
+  color: var(--accent);
+}
+.brand-second {
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+  font-weight: 400;
+}
+.site-header nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.icon-button {
+  width: 44px;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-color: transparent;
+  font-size: 20px;
+}
+.wallet-button {
+  font-size: 12px;
+  border-color: var(--ink);
+  margin-left: 8px;
+}
+.quiet {
+  min-width: 44px;
+  font-size: 12px;
+  border-color: transparent;
+  padding: 10px 4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: 400;
+}
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--button);
+  border-color: var(--button);
+  color: var(--button-ink);
+  text-decoration: none;
+  font-weight: 600;
+  min-height: 48px;
+  width: 100%;
+}
+.outline-button {
+  width: 100%;
+  border-color: var(--ink);
+  font-size: 16px;
+}
+.primary:active:not(:disabled) {
+  background: var(--accent);
+}
+main {
+  max-width: 1320px;
+  padding: 32px 40px 0;
+  margin: auto;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 28px;
+}
+.intro p {
+  color: var(--muted);
+  margin-top: 8px;
+  font-size: 16px;
+}
+.guest-label {
+  font-size: 12px;
+  color: var(--muted);
+  padding-bottom: 4px;
+}
+.game-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
+  gap: 32px;
+}
+.play-column,
+.side-column {
+  min-width: 0;
+}
+.game-machine {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: clip;
+}
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.hud > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hud strong {
+  font-size: 24px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.lives {
+  color: var(--accent);
+  font-size: 20px;
+  line-height: 1.5;
+  word-spacing: 2px;
+}
+.hud .quiet {
+  align-self: center;
+}
+.arena-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--arena);
+  color: var(--arena-ink);
+  gap: 8px;
+}
+.status-dot {
+  font-size: 12px;
+  color: #f8c48d;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.status-dot:before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  background: currentColor;
+}
+.status-dot.live {
+  color: #b7d8a4;
+}
+.arena {
+  position: relative;
+  background: var(--arena);
+  aspect-ratio: 900/400;
+}
+.arena canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.arena-labels {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 6%;
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 12px;
+  color: #c4b9a1;
+}
+.race-readout {
+  position: absolute;
+  top: 9%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #f8c48d;
+  font-family: monospace;
+  font-size: 20px;
+  background: #292b27e6;
+  width: max-content;
+  max-width: 90%;
+  margin: auto;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+.speech {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+  min-height: 56px;
+  font-size: 12px;
+}
+.mood-icon {
+  font-size: 24px;
+  color: var(--accent);
+  line-height: 1;
+}
+.speech p {
+  font-size: 12px;
+}
+.call-panel {
+  padding: 20px 24px 16px;
+}
+.call-heading,
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.call-heading h2 {
+  font-size: 20px;
+}
+.timer {
+  font-family: monospace;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.ai-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0 16px;
+}
+.ai-line strong {
+  font-family: monospace;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+.mode-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.mode-tabs button {
+  border: 0;
+  border-radius: 0;
+  font-size: 12px;
+  padding: 10px 0;
+  min-height: 44px;
+  font-weight: 400;
+}
+.mode-tabs button[aria-pressed="true"] {
+  background: transparent;
+  color: var(--ink);
+  border-bottom: 2px solid var(--accent);
+  font-weight: 600;
+}
+.calls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.calls button {
+  display: flex;
+  text-align: left;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border-color: var(--line);
+}
+.call-icon {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--accent);
+}
+.calls button[aria-pressed="true"] .call-icon {
+  color: var(--bg);
+}
+.calls small {
+  font-size: 12px;
+  margin-top: 2px;
+}
+.calls kbd {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: monospace;
+  color: var(--muted);
+}
+.calls button[aria-pressed="true"] kbd {
+  color: var(--bg);
+}
+.zone-calls {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.zone-calls button {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  padding: 10px 4px;
+  min-height: 72px;
+}
+.booster-heading {
+  margin: 16px 0 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.boosters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.boosters button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  font-size: 12px;
+  min-height: 56px;
+  text-align: left;
+  border-color: var(--line);
+}
+.boosters svg {
+  flex-shrink: 0;
+}
+.boosters small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.boosters [aria-pressed="true"] small {
+  color: inherit;
+}
+.booster-symbol {
+  font-size: 20px;
+  font-weight: 400;
+}
+.control-hint {
+  margin-top: 8px;
+}
+.result {
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  font-size: 16px;
+  min-height: 48px;
+}
+.telemetry-section {
+  margin: 20px 0 32px;
+}
+summary {
+  cursor: pointer;
+  font-size: 16px;
+  min-height: 44px;
+  padding: 12px 0;
+  font-weight: 600;
+}
+summary span {
+  float: right;
+}
+.details-body {
+  padding: 8px 0;
+  font-size: 12px;
+  display: grid;
+  gap: 12px;
+}
+.details-body a {
+  overflow-wrap: anywhere;
+}
+.records-section {
+  padding-bottom: 24px;
+}
+.section-heading {
+  margin-bottom: 16px;
+}
+.section-heading h2 {
+  font-size: 20px;
+}
+.empty-records {
+  padding: 24px 0;
+  color: var(--muted);
+  font-size: 16px;
+  border-bottom: 1px solid var(--line);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 400;
+}
+td,
+th {
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--line);
+}
+td:last-child,
+th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.run-actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+}
+.boss-section {
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.boss-title {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 24px 0;
+}
+.boss-title svg {
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.boss-title p {
+  margin-top: 4px;
+}
+.hp-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.hp-label strong {
+  font-size: 24px;
+  font-family: monospace;
+}
+.hp-label > span:last-child {
+  margin-left: auto;
+  color: var(--accent);
+}
+.hp-track {
+  height: 10px;
+  background: var(--line);
+  margin: 10px 0 12px;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.hp-track > div {
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+}
+.art-section {
+  margin-top: 28px;
+}
+.art-section > .section-heading {
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.art-section h2 {
+  font-size: 24px;
+  letter-spacing: -0.6px;
+}
+.art-edition {
+  color: var(--muted);
+}
+#art {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--art);
+  border-radius: 4px;
+  aspect-ratio: 1;
+}
+.art-caption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+}
+input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+input::placeholder {
+  color: var(--muted);
+}
+.art-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wallet-section {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.wallet-section p {
+  margin: 8px 0;
+}
+.wallet-section > .outline-button {
+  margin-top: 16px;
+}
+.tx-explanation {
+  padding-top: 12px;
+}
+.contracts {
+  margin-top: 16px;
+}
+.contracts summary {
+  font-size: 12px;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+  padding: 20px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-brand {
+  font-weight: 600;
+  color: var(--ink);
+}
+dialog {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  width: min(520px, calc(100% - 24px));
+  max-height: 90dvh;
+  overscroll-behavior: contain;
+}
+dialog::backdrop {
+  background: #181a17aa;
+  backdrop-filter: blur(3px);
+}
+.dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.dialog-heading .icon-button {
+  flex-shrink: 0;
+}
+dialog p {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+dialog details {
+  margin-bottom: 16px;
+}
+dialog details p {
+  font-size: 12px;
+}
+.tutorial {
+  padding-left: 20px;
+  margin: 20px 0;
+}
+.tutorial li {
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+.tutorial strong {
+  display: block;
+}
+.wallet-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 8px 0;
+  min-height: 48px;
+}
+.wallet-row img {
+  width: 28px;
+  height: 28px;
+}
+#pngPreview {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.notice {
+  padding: 12px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+#insight,
+#zoneHint {
+  padding: 8px 0;
+}
+#txStatus a {
+  display: inline-block;
+  min-height: 44px;
+  padding: 8px 0;
+}
+@media (hover: hover) {
+  button:not(:disabled):hover {
+    border-color: var(--ink);
+    background: var(--line);
+  }
+  .primary:not(:disabled):hover {
+    color: var(--button-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .mode-tabs button:hover {
+    background: transparent;
+  }
+  .quiet:hover {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
+  }
+}
+@media (min-width: 1500px) {
+  .site-header,
+  main {
+    max-width: 1440px;
+  }
+  .game-grid {
+    gap: 40px;
+  }
+  .arena {
+    aspect-ratio: 900/430;
+  }
+}
+@media (max-width: 900px) {
+  .site-header {
+    padding: 20px 24px;
+  }
+  main {
+    padding: 24px 24px 0;
+  }
+  .game-grid {
+    gap: 24px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  }
+  .call-panel {
+    padding: 16px;
+  }
+  .hud {
+    padding: 12px 16px;
+  }
+  .boosters button {
+    gap: 4px;
+    padding: 8px 4px;
+  }
+  .boosters svg {
+    width: 16px;
+  }
+  .calls button {
+    gap: 8px;
+    padding: 10px;
+  }
+  .calls kbd {
+    display: none;
+  }
+  .art-section h2 {
+    font-size: 20px;
+  }
+}
+@media (max-width: 740px) {
+  .site-header {
+    padding: 12px 16px;
+  }
+  .site-header nav {
+    gap: 0;
+  }
+  .wallet-button {
+    padding: 10px 10px;
+    margin-left: 0;
+  }
+  .brand {
+    font-size: 16px;
+    gap: 6px;
+  }
+  .brand svg {
+    width: 30px;
+    height: 30px;
+  }
+  .desktop-only {
+    display: none;
+  }
+  main {
+    padding: 20px 16px 0;
+  }
+  .intro {
+    margin-bottom: 20px;
+    align-items: start;
+  }
+  .intro h1 {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+  .intro p {
+    font-size: 16px;
+    margin-top: 4px;
+  }
+  .guest-label {
+    display: none;
+  }
+  .game-grid {
+    display: block;
+  }
+  .side-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 16px;
+  }
+  .wallet-section {
+    grid-column: 1/-1;
+  }
+  .boss-section {
+    border-bottom: 0;
+  }
+  .art-section {
+    margin-top: 0;
+  }
+  .arena {
+    aspect-ratio: 900/420;
+  }
+  .arena-labels {
+    font-size: 12px;
+    bottom: 4%;
+  }
+  .arena-top {
+    padding: 10px 12px;
+  }
+  .call-panel {
+    padding: 16px;
+  }
+  .speech {
+    padding: 10px 16px;
+  }
+  .calls button {
+    min-height: 64px;
+  }
+  .calls small {
+    max-width: 95px;
+  }
+  .boosters button {
+    padding: 8px;
+  }
+  .call-panel .primary {
+    min-height: 48px;
+  }
+  .booster-heading {
+    margin-top: 12px;
+  }
+  .hud {
+    padding: 12px 16px;
+  }
+  .hud strong {
+    font-size: 20px;
+  }
+  .section-heading {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  footer {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  footer p {
+    width: 100%;
+    order: 3;
+  }
+  dialog {
+    padding: 20px;
+  }
+  #walletDialog {
+    margin: auto auto 12px;
+    max-height: 85dvh;
+  }
+  .brand-second {
+    font-size: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .side-column {
+    display: block;
+    margin-top: 32px;
+  }
+  .boss-section {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 24px;
+  }
+  .art-section {
+    margin-top: 24px;
+  }
+  .site-header .icon-button {
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px;
+  }
+  .call-heading h2 {
+    font-size: 16px;
+  }
+  .ai-line {
+    margin: 4px 0 8px;
+  }
+  .ai-line strong {
+    font-size: 20px;
+  }
+  .mode-tabs {
+    margin-bottom: 8px;
+  }
+  .boosters {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .boosters button {
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 3px;
+    font-weight: 400;
+  }
+  .boosters small {
+    display: none;
+  }
+  .boosters .booster-symbol {
+    font-size: 16px;
+  }
+  .calls small {
+    font-size: 12px;
+  }
+  .call-icon {
+    font-size: 20px;
+  }
+  .arena {
+    aspect-ratio: 900/380;
+  }
+  .speech {
+    min-height: 44px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .lives {
+    font-size: 16px;
+  }
+  .hud .quiet {
+    padding: 10px 0;
+  }
+  .intro {
+    margin-bottom: 16px;
+  }
+  main {
+    padding-top: 16px;
+  }
+  .status-dot,
+  .arena-top .small {
+    font-size: 12px;
+  }
+  .arena-labels {
+    left: 7%;
+    right: 6%;
+    font-size: 12px;
+  }
+  .race-readout {
+    font-size: 16px;
+  }
+  .control-hint {
+    font-size: 12px;
+  }
+  .boosters button {
+    min-height: 44px;
+  }
+}
+@media (max-width: 359px) {
+  main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .site-header {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .brand svg {
+    display: none;
+  }
+  .calls button {
+    padding: 10px 6px;
+    gap: 5px;
+  }
+  .call-panel {
+    padding: 12px;
+  }
+  .arena-top {
+    gap: 4px;
+    padding: 8px;
+  }
+  .arena-top .small {
+    font-size: 12px;
+  }
+  .booster-heading {
+    gap: 4px;
+  }
+  .boosters svg {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  button {
+    transition:
+      background-color 120ms,
+      border-color 120ms;
+  }
+  button:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+}
+@media (forced-colors: active) {
+  button,
+  input,
+  .game-machine {
+    border: 1px solid ButtonText;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight;
+  }
+  .hp-track {
+    border: 1px solid CanvasText;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#game">Skip to game</a>
+    <header class="site-header">
+      <a class="brand" href="#game" aria-label="Squeek Survival home"
+        ><svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+          <circle
+            cx="18"
+            cy="18"
+            r="15"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+          />
+          <path d="M10 16h4v-5h5v5h7v9H12v-4h-2z" fill="currentColor" />
+          <path d="M22 18h2v2h-2z" fill="var(--bg)" /></svg
+        ><span>Squeek<span class="brand-second">Survival</span></span></a
+      >
+      <nav aria-label="Game utilities">
+        <button
+          id="helpBtn"
+          class="icon-button"
+          aria-label="How to play"
+          title="How to play"
+        >
+          ?</button
+        ><button
+          id="soundBtn"
+          class="icon-button"
+          aria-label="Sound off"
+          aria-pressed="false"
+          title="Sound off"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <path d="M10 5 5 9H2v6h3l5 4V5ZM15 9l6 6m0-6-6 6" />
+          </svg></button
+        ><button
+          id="themeBtn"
+          class="icon-button"
+          aria-label="Use charcoal theme"
+          title="Change theme"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="7" />
+            <path d="M12 5v14" />
+          </svg></button
+        ><button id="connectBtn" class="wallet-button">
+          Connect<span class="desktop-only"> wallet</span>
+        </button>
+      </nav>
+    </header>
+    <main id="game">
+      <div class="intro">
+        <div>
+          <h1>Beat Robo-Squeek.</h1>
+          <p>Keep the wheel alive.</p>
+        </div>
+        <span class="guest-label">Guest play · No wallet needed</span>
+      </div>
+      <p id="storageNotice" class="notice" role="status" hidden></p>
+      <div class="game-grid">
+        <div class="play-column">
+          <section class="game-machine" aria-label="Prediction duel">
+            <div class="hud">
+              <div>
+                <span class="small muted">Your run</span>
+                <div id="lives" class="lives" aria-label="3 lives">● ● ●</div>
+              </div>
+              <div>
+                <span class="small muted">Streak</span
+                ><strong id="streak">0</strong>
+              </div>
+              <div>
+                <span class="small muted">Local score</span
+                ><strong id="score">0</strong>
+              </div>
+              <button id="pauseBtn" class="quiet">Pause</button>
+            </div>
+            <div class="arena-top">
+              <span id="wheelStatus" class="status-dot">PRACTICE</span
+              ><span class="small" id="roundLabel">Round 01</span
+              ><span class="small" id="seedBadge">Seed · WAITING</span>
+            </div>
+            <div class="arena">
+              <canvas
+                id="arena"
+                width="900"
+                height="400"
+                role="img"
+                aria-label="Pixel hamster in a wheel facing Robo-Squeek. Virtual race distance appears below."
+              ></canvas>
+              <div class="arena-labels">
+                <span>You + the wheel</span><span>Robo-Squeek</span>
+              </div>
+              <div id="raceReadout" class="race-readout" hidden></div>
+            </div>
+            <div class="speech">
+              <span class="mood-icon" aria-hidden="true">▦</span>
+              <p id="dialogue">One wheel. Three lives. Your call.</p>
+            </div>
+            <div class="call-panel">
+              <div class="call-heading">
+                <h2 id="phaseTitle">Make your prediction</h2>
+                <span id="timer" class="timer" aria-label="12 seconds remaining"
+                  >12s</span
+                >
+              </div>
+              <div class="ai-line">
+                <span
+                  >Robo calls <strong id="aiNumber">468</strong
+                  ><span class="muted"> D</span></span
+                ><span id="aiZone" class="small muted">Cruise zone</span>
+              </div>
+              <div class="mode-tabs" role="group" aria-label="Prediction mode">
+                <button id="duelMode" aria-pressed="true">Over / Under</button
+                ><button id="zoneMode" aria-pressed="false">Pick a zone</button>
+              </div>
+              <div
+                id="duelCalls"
+                class="calls"
+                role="group"
+                aria-label="Choose prediction"
+              >
+                <button data-call="OVER">
+                  <span class="call-icon" aria-hidden="true">↗</span
+                  ><span>Over <small>Beat Robo’s distance</small></span
+                  ><kbd>1</kbd></button
+                ><button data-call="UNDER">
+                  <span class="call-icon" aria-hidden="true">↘</span
+                  ><span>Under <small>Finish below it</small></span
+                  ><kbd>2</kbd>
+                </button>
+              </div>
+              <div
+                id="zoneCalls"
+                class="calls zone-calls"
+                role="group"
+                aria-label="Choose a zone"
+                hidden
+              >
+                <button data-call="Sprint">
+                  Sprint<small>&lt;436 D</small></button
+                ><button data-call="Cruise">
+                  Cruise<small>436–499 D</small></button
+                ><button data-call="Marathon">
+                  Marathon<small>500+ D</small>
+                </button>
+              </div>
+              <p id="zoneHint" class="small muted" hidden>
+                Robo’s announced zone is unavailable. Both wrong is a draw.
+              </p>
+              <div class="booster-heading">
+                <span class="small muted">Optional booster</span
+                ><span id="multiplier" class="small">Damage ×1.000</span>
+              </div>
+              <div
+                class="boosters"
+                role="group"
+                aria-label="Choose one optional booster"
+              >
+                <button data-booster="Shield" aria-pressed="false">
+                  <svg
+                    viewBox="0 0 20 20"
+                    width="18"
+                    height="18"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    aria-hidden="true"
+                  >
+                    <path d="m10 2 7 3v5c0 4-7 8-7 8s-7-4-7-8V5z" /></svg
+                  ><span>Shield<small>Save lives</small></span></button
+                ><button data-booster="Double Down" aria-pressed="false">
+                  <span aria-hidden="true" class="booster-symbol">×2</span
+                  ><span>Double down<small>Double stakes</small></span></button
+                ><button data-booster="Insight" aria-pressed="false">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    aria-hidden="true"
+                  >
+                    <path d="M1 10s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z" />
+                    <circle cx="10" cy="10" r="2" /></svg
+                  ><span>Insight<small>Read the odds</small></span>
+                </button>
+              </div>
+              <p id="insight" class="small muted" hidden></p>
+              <button id="lockBtn" class="primary" disabled>
+                Choose a call to lock in <span aria-hidden="true">→</span>
+              </button>
+              <p id="roundMessage" class="small muted control-hint">
+                Virtual distance D decides the duel. Real RPM boosts damage.
+              </p>
+              <div id="result" class="result" role="status" hidden></div>
+            </div>
+          </section>
+          <section class="telemetry-section">
+            <details>
+              <summary>
+                Under the wheel
+                <span class="muted small">Telemetry & seed</span>
+              </summary>
+              <div class="details-body">
+                <p id="telemetryCurrent"></p>
+                <p id="telemetryFrozen"></p>
+                <p id="economyState"></p>
+                <p id="targetInfo"></p>
+                <p id="seedInfo" class="break"></p>
+                <p class="small muted">
+                  The hardware sample and Robo’s call freeze before prediction.
+                  New samples affect the next round. Daily hardware distance
+                  never becomes race D.
+                </p>
+                <button id="retryNetwork" class="quiet">Retry network</button>
+              </div>
+            </details>
+          </section>
+          <section class="records-section">
+            <div class="section-heading">
+              <h2>Your local records</h2>
+              <span class="small muted">This device only</span>
+            </div>
+            <div id="recordsEmpty" class="empty-records">
+              Your first run starts here. Finish a run to set a record.
+            </div>
+            <table id="recordsTable" hidden>
+              <caption class="sr-only">
+                Top ten completed runs on this device
+              </caption>
+              <thead>
+                <tr>
+                  <th>Player / date</th>
+                  <th>Best streak</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody id="recordsBody"></tbody>
+            </table>
+            <div class="run-actions">
+              <button id="endRun" class="quiet">End run</button
+              ><button id="resetAI" class="quiet">Reset Robo’s memory</button
+              ><button id="newRun" class="quiet" hidden>Start new run</button>
+            </div>
+          </section>
+        </div>
+        <aside class="side-column">
+          <section class="boss-section">
+            <div class="section-heading">
+              <h2>The weekly raid</h2>
+              <span id="bossWeek" class="small muted"></span>
+            </div>
+            <div class="boss-title">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 32 32"
+                aria-hidden="true"
+              >
+                <path
+                  d="M14 2h4v4h8v4h4v16h-4v4H6v-4H2V10h4V6h8z"
+                  fill="var(--accent)"
+                />
+                <path d="M8 12h16v10H8z" fill="var(--ink)" />
+                <path d="M10 14h4v4h-4zm8 0h4v4h-4z" fill="var(--bg)" />
+                <path d="M12 24h8v2h-8z" fill="var(--ink)" />
+              </svg>
+              <div>
+                <h3>Robo-Squeek</h3>
+                <p class="small muted">LOCAL RAID - this device</p>
+              </div>
+            </div>
+            <div class="hp-label">
+              <strong id="bossHP">50,000</strong
+              ><span class="small muted">/ 50,000 HP</span
+              ><span id="loot" class="small">Loot ×1</span>
+            </div>
+            <div
+              class="hp-track"
+              role="progressbar"
+              id="bossProgress"
+              aria-label="Boss health"
+              aria-valuemin="0"
+              aria-valuemax="50000"
+              aria-valuenow="50000"
+            >
+              <div id="hpFill"></div>
+            </div>
+            <p id="bossStage" class="small muted">
+              A fresh robot. A whole week of trouble.
+            </p>
+          </section>
+          <section class="art-section">
+            <div class="section-heading">
+              <h2>Your wheelprint</h2>
+            </div>
+            <canvas
+              id="art"
+              width="600"
+              height="600"
+              role="img"
+              aria-label="Your procedural wheelprint, built from settled races"
+            ></canvas>
+            <div class="art-caption">
+              <span id="artCount">Waiting for your first mark</span
+              ><span aria-hidden="true">↙ 001</span>
+            </div>
+            <label for="playerName" class="small"
+              >Name your wheelprint <span class="muted">(optional)</span></label
+            ><input
+              id="playerName"
+              maxlength="20"
+              autocomplete="nickname"
+              placeholder="GUEST"
+            /><button id="exportBtn" class="primary" disabled>
+              Save wheelprint <span class="small">1080 × 1080 PNG</span>
+            </button>
+            <div class="art-controls">
+              <button id="clearArt" class="quiet">New canvas</button
+              ><span class="small muted">Made by your races.</span>
+            </div>
+          </section>
+          <section id="walletPanel" class="wallet-section">
+            <div class="section-heading">
+              <h2>Optional wallet</h2>
+              <span class="small muted">Sepolia</span>
+            </div>
+            <p class="small muted">
+              Connect whenever you like. Guest play is always available.
+            </p>
+            <p id="walletAccount" class="break small"></p>
+            <p id="walletBalance" class="small">SQK balance · Unknown</p>
+            <p id="codeStatus" class="small muted">
+              Pinned contracts have not been checked.
+            </p>
+            <button id="switchChain" class="quiet" hidden>
+              Switch to Sepolia</button
+            ><button id="disconnectBtn" class="quiet" hidden>
+              Disconnect wallet
+            </button>
+            <p class="small muted tx-explanation">
+              0 SQK to yourself on Sepolia; test ETH gas. No on-chain game save
+              or guaranteed Tester badge.
+            </p>
+            <button id="sendBtn" class="outline-button" disabled>
+              Send test transaction
+            </button>
+            <p id="txHint" class="small muted">
+              Unlocks after one settled participated round.
+            </p>
+            <p id="walletMessage" class="small" role="status"></p>
+            <div id="txStatus" class="small break" role="status"></div>
+            <button id="checkTx" class="quiet" hidden>Check status</button>
+            <details class="contracts">
+              <summary>Pinned contracts</summary>
+              <div id="contractLinks" class="details-body small"></div>
+            </details>
+          </section>
+        </aside>
+      </div>
+      <footer>
+        <span class="footer-brand">Squeek Survival</span>
+        <p>Virtual races. Local cosmetic scores. No token rewards.</p>
+        <button id="rulesBtn" class="quiet">Game rules</button>
+      </footer>
+    </main>
+    <div
+      class="sr-only"
+      id="announcer"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+    <dialog id="helpDialog" aria-labelledby="helpTitle">
+      <div class="dialog-heading">
+        <h2 id="helpTitle">A little wheel. A big rival.</h2>
+        <button class="icon-button close-dialog" aria-label="Close help">
+          ×
+        </button>
+      </div>
+      <p>
+        Make a call on a virtual race. Keep three lives alive and chip away at
+        your device’s weekly boss.
+      </p>
+      <ol class="tutorial">
+        <li>
+          <strong>Read Robo’s call.</strong> Pick Over or Under its distance, or
+          pick a different zone.
+        </li>
+        <li>
+          <strong>Lock in within 12 seconds.</strong> Add one booster if you
+          like. No pick means a free skip.
+        </li>
+        <li>
+          <strong>Watch the wheel.</strong> A future Sepolia block seeds the
+          race. Offline? A cryptographic local seed takes over within 45
+          seconds.
+        </li>
+        <li>
+          <strong>Win, hit, repeat.</strong> Hardware RPM affects damage, never
+          the virtual finish. Save the art your races create.
+        </li>
+      </ol>
+      <details>
+        <summary>Lives, boosters & scoring</summary>
+        <p>
+          Over / Under equality is a push. In Zone mode, only you right wins;
+          only Robo right loses; both wrong draws; both right ties. Neutral
+          results keep your streak and lives.
+        </p>
+        <p>
+          Shield prevents life loss, but a loss still resets your streak. Double
+          down doubles win damage and life loss. Insight shows historical spread
+          and Robo’s zone accuracy. Boosters are spent at lock, including
+          neutral results. Shield rests for two participated rounds when live
+          and still, otherwise three. Other boosters rest for three. Skips do
+          not count.
+        </p>
+        <p>
+          Damage = round(D × (1 + 0.1 × min(win streak, 10)) × frozen RPM
+          multiplier × double down). Moving hardware adds up to 25%; 60 RPM
+          gives ×1.125. Score = round((applied damage + 100 × best streak) ×
+          highest raid loot multiplier encountered).
+        </p>
+        <p>
+          Raid health resets Monday 00:00 UTC using the ISO week year. A round
+          belongs to the week it started. Loot at 75%, 50%, 25%, and zero HP
+          rises to ×1.1, ×1.25, ×1.5, and ×2. A defeated boss takes no further
+          damage.
+        </p>
+        <p>
+          Keyboard: 1 / 2 pick Over / Under, 3 / 4 / 5 pick a zone, Enter locks,
+          P pauses. All controls also work with Tab and Space. Pause stops the
+          local timer and animations. Hidden tabs pause requests, timers, and
+          audio.
+        </p>
+        <p>
+          Local records and Robo’s learning stay in this browser. No account,
+          rewards, deposits, or game data on-chain.
+        </p>
+      </details>
+      <button id="startPlaying" class="primary">
+        Let’s roll <span aria-hidden="true">→</span>
+      </button>
+    </dialog>
+    <dialog id="walletDialog" aria-labelledby="walletTitle">
+      <div class="dialog-heading">
+        <h2 id="walletTitle">Connect a wallet</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close wallet chooser"
+        >
+          ×
+        </button>
+      </div>
+      <p class="small muted">
+        Choose your browser wallet. Guest play stays available.
+      </p>
+      <div id="walletList"></div>
+      <p id="noWallet" class="small muted" hidden>
+        No browser wallet found. On your phone, open this page inside your
+        wallet’s browser.
+      </p>
+      <p id="chooserMessage" class="small" role="status"></p>
+    </dialog>
+    <dialog id="previewDialog" aria-labelledby="previewTitle">
+      <div class="dialog-heading">
+        <h2 id="previewTitle">Your wheelprint</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close image preview"
+        >
+          ×
+        </button>
+      </div>
+      <img id="pngPreview" alt="Exported wheelprint with run stats" />
+      <p class="small muted">Long press the image to save on a phone.</p>
+      <a id="pngDownload" class="primary" download="squeek-wheelprint.png"
+        >Download PNG</a
+      >
+    </dialog>
+    <dialog id="confirmDialog" aria-labelledby="confirmTitle">
+      <div class="dialog-heading">
+        <h2 id="confirmTitle">End this run?</h2>
+        <button
+          class="icon-button close-dialog"
+          aria-label="Close confirmation"
+        >
+          ×
+        </button>
+      </div>
+      <p id="confirmText"></p>
+      <button id="confirmAction" class="primary">End run & save record</button>
+    </dialog>
+    <script>
+      "use strict";
+/** Pure mechanics. No network, DOM, storage, clock reads or wallet access. */
+var Squeek;
+(function (Squeek) {
+    Squeek.PIN = Object.freeze({
+        chain: "0xaa36a7",
+        chainId: "11155111",
+        token: "0x5501e1fa81be1c3f49225fa7668da0245d07db60",
+        mining: "0xcd46990f8349057335289ef282c276204b6cdc62",
+        core: "0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44",
+        installation: "stream-game-sepolia-test-20261025-01",
+        release: "stream-game-sepolia-test-20261026-01",
+        api: "https://api.squeekchain.com",
+        explorer: "https://sepolia.etherscan.io",
+        rpcs: [
+            "https://ethereum-sepolia-rpc.publicnode.com",
+            "https://sepolia.drpc.org",
+            "https://1rpc.io/sepolia",
+        ],
+    });
+    Squeek.clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+    function xmur3(str) {
+        let h = 1779033703 ^ str.length;
+        for (let i = 0; i < str.length; i++) {
+            h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+            h = (h << 13) | (h >>> 19);
+        }
+        return () => {
+            h = Math.imul(h ^ (h >>> 16), 2246822507);
+            h = Math.imul(h ^ (h >>> 13), 3266489909);
+            return (h ^= h >>> 16) >>> 0;
+        };
+    }
+    Squeek.xmur3 = xmur3;
+    function sfc32(a, b, c, d) {
+        return () => {
+            a >>>= 0;
+            b >>>= 0;
+            c >>>= 0;
+            d >>>= 0;
+            let t = (a + b) | 0;
+            a = b ^ (b >>> 9);
+            b = (c + (c << 3)) | 0;
+            c = (c << 21) | (c >>> 11);
+            d = (d + 1) | 0;
+            t = (t + d) | 0;
+            c = (c + t) | 0;
+            return (t >>> 0) / 4294967296;
+        };
+    }
+    Squeek.sfc32 = sfc32;
+    function rng(seed) {
+        const h = xmur3(seed);
+        return sfc32(h(), h(), h(), h());
+    }
+    Squeek.rng = rng;
+    Squeek.zone = (D) => D < 436 ? "Sprint" : D < 500 ? "Cruise" : "Marathon";
+    Squeek.tier = (rpm) => rpm < 145 ? "LOW" : rpm < 170 ? "MID" : "HIGH";
+    function race(seed) {
+        const random = rng(seed);
+        let v = 3, sum = 0, peak = 0;
+        const ticks = [];
+        for (let i = 0; i < 24; i++) {
+            const r1 = random(), r2 = random();
+            let a = (r1 - 0.5) * 0.6 + 0.1 * (3 - v);
+            const burst = r2 < 0.12;
+            if (burst)
+                a += 0.8 + random() * 0.8;
+            v = Squeek.clamp(v + a, 0.6, 6);
+            sum += v;
+            peak = Math.max(peak, v);
+            ticks.push({ v, a, burst });
+        }
+        const D = Math.round(sum * 5), peakRPM = Math.round(peak * 30);
+        return { D, peakRPM, zone: Squeek.zone(D), tier: Squeek.tier(peakRPM), ticks };
+    }
+    Squeek.race = race;
+    function stats(ai) {
+        const h = ai.history.slice(-20);
+        if (h.length < 5)
+            return { baseline: 468, sigma: 67 };
+        let weighted = 0, weight = 0;
+        h.forEach((r, i) => {
+            const w = 0.5 ** ((h.length - 1 - i) / 6);
+            weighted += r.D * w;
+            weight += w;
+        });
+        const mean = h.reduce((s, r) => s + r.D, 0) / h.length;
+        return {
+            baseline: weighted / weight,
+            sigma: Math.max(40, Math.sqrt(h.reduce((s, r) => s + (r.D - mean) ** 2, 0) / h.length)),
+        };
+    }
+    Squeek.stats = stats;
+    function predict(ai, random) {
+        const { baseline, sigma } = stats(ai);
+        const picks = ai.history
+            .slice(-20)
+            .filter((r) => r.call === "OVER" || r.call === "UNDER");
+        const over = picks.length
+            ? picks.filter((r) => r.call === "OVER").length / picks.length
+            : 0, under = picks.length
+            ? picks.filter((r) => r.call === "UNDER").length / picks.length
+            : 0;
+        const r1 = random(), r2 = random(), r3 = random();
+        const A = Math.round(baseline +
+            ai.g * 0.5 * sigma * (over - under) +
+            (r1 + r2 + r3 - 1.5) * sigma * (1 - 0.6 * ai.g));
+        return { A, aiZone: Squeek.zone(A), sigma };
+    }
+    Squeek.predict = predict;
+    function adapt(ai) {
+        const decided = ai.decisions.slice(-20);
+        if (!decided.length)
+            return;
+        const ratio = decided.filter((r) => r === "WIN").length / decided.length;
+        if (ratio > 0.55)
+            ai.g = Squeek.clamp(ai.g + 0.05, 0.2, 0.9);
+        else if (ratio < 0.4)
+            ai.g = Squeek.clamp(ai.g - 0.05, 0.2, 0.9);
+    }
+    Squeek.adapt = adapt;
+    function resolve(call, D, A) {
+        if (call === "OVER")
+            return D > A ? "WIN" : D < A ? "LOSS" : "PUSH";
+        if (call === "UNDER")
+            return D < A ? "WIN" : D > A ? "LOSS" : "PUSH";
+        const p = Squeek.zone(D) === call, a = Squeek.zone(D) === Squeek.zone(A);
+        return p ? (a ? "TIE" : "WIN") : a ? "LOSS" : "DRAW";
+    }
+    Squeek.resolve = resolve;
+    function economy(e) {
+        if (!e || e.status !== "available")
+            return "unavailable";
+        return e.schemaVersion === 2 &&
+            e.installationId === Squeek.PIN.installation &&
+            e.release?.id === Squeek.PIN.release &&
+            e.chain?.chainId === Squeek.PIN.chainId &&
+            typeof e.identities?.token === "string" &&
+            e.identities.token.toLowerCase() === Squeek.PIN.token &&
+            typeof e.identities?.core === "string" &&
+            e.identities.core.toLowerCase() === Squeek.PIN.core &&
+            typeof e.identities?.mining?.proxy === "string" &&
+            e.identities.mining.proxy.toLowerCase() === Squeek.PIN.mining
+            ? "match"
+            : "mismatch";
+    }
+    Squeek.economy = economy;
+    function telemetry(s, now, mismatch = false) {
+        const practice = (reason) => ({
+            mode: "PRACTICE",
+            rpm: 0,
+            M: 1,
+            cooldown: 3,
+            observedAt: null,
+            epoch: "practice",
+            work: "0",
+            reason,
+            frozenAt: now,
+        });
+        if (mismatch)
+            return practice("Economy identity mismatch. Live effects disabled.");
+        const m = s?.measurement;
+        if (s?.schemaVersion !== 1 || s?.installationId !== Squeek.PIN.installation || !m)
+            return practice("Hardware telemetry unavailable.");
+        const observed = Date.parse(m.observedAt), age = (now - observed) / 1000;
+        const stale = m.staleAfterSeconds;
+        if (m.freshness !== "online" ||
+            m.provenance !== "hardware" ||
+            !["IDLE", "ACTIVE"].includes(m.coreStatus) ||
+            !Number.isFinite(stale) ||
+            stale <= 0 ||
+            !Number.isFinite(age) ||
+            age > Math.min(120, stale) ||
+            age < -30 ||
+            !Number.isSafeInteger(m.rpmMilli) ||
+            m.rpmMilli < 0 ||
+            typeof m.counterEpoch !== "string" ||
+            typeof m.cumulativeWorkUnits !== "string" ||
+            !/^\d+$/.test(m.cumulativeWorkUnits))
+            return practice("Hardware sample is stale or unverified.");
+        const rpm = m.rpmMilli / 1000;
+        return {
+            mode: rpm > 0 ? "LIVE MOVING" : "LIVE STILL",
+            rpm,
+            M: rpm > 0 ? 1 + 0.25 * Math.min(rpm / 120, 1) : 1,
+            cooldown: rpm === 0 ? 2 : 3,
+            observedAt: m.observedAt,
+            epoch: m.counterEpoch,
+            work: m.cumulativeWorkUnits,
+            reason: "Verified hardware sample",
+            frozenAt: now,
+        };
+    }
+    Squeek.telemetry = telemetry;
+    function week(now) {
+        const d = new Date(now);
+        d.setUTCHours(0, 0, 0, 0);
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        const year = d.getUTCFullYear(), start = new Date(Date.UTC(year, 0, 1));
+        return `${year}-W${String(Math.ceil(((+d - +start) / 86400000 + 1) / 7)).padStart(2, "0")}`;
+    }
+    Squeek.week = week;
+    Squeek.loot = (hp) => hp > 37500 ? 1 : hp > 25000 ? 1.1 : hp > 12500 ? 1.25 : hp > 0 ? 1.5 : 2;
+    Squeek.score = (run) => Math.round((run.damage + 100 * run.best) * run.multiplier);
+    function newRun(id, now, multiplier = 1) {
+        return {
+            id,
+            active: true,
+            lives: 3,
+            streak: 0,
+            best: 0,
+            damage: 0,
+            multiplier,
+            live: 0,
+            practice: 0,
+            started: now,
+            logged: false,
+            ready: { Shield: 0, "Double Down": 0, Insight: 0 },
+            lastSeed: null,
+            lastSeedType: "WAITING",
+        };
+    }
+    Squeek.newRun = newRun;
+    function initial(now) {
+        return {
+            version: 3,
+            ai: { g: 0.5, history: [], decisions: [], hits: 0, seen: 0, best: 0 },
+            counts: {
+                participated: 0,
+                wins: 0,
+                losses: 0,
+                calls: {},
+                runs: 0,
+                lastVisit: now,
+            },
+            run: newRun("initial", now),
+            round: null,
+            applied: [],
+            boss: { [week(now)]: { hp: 50000 } },
+            art: [],
+            top10: [],
+            dialogue: {},
+            name: "",
+        };
+    }
+    Squeek.initial = initial;
+    function recover(raw, now) {
+        const state = initial(now), recovered = [];
+        if (!raw || raw.version !== 3)
+            return { state, recovered: raw ? ["state"] : [] };
+        const validNumber = (n) => Number.isFinite(n) && n >= 0;
+        for (const key of [
+            "ai",
+            "counts",
+            "run",
+            "round",
+            "applied",
+            "boss",
+            "art",
+            "top10",
+            "dialogue",
+            "name",
+        ]) {
+            const v = raw[key];
+            let ok = false;
+            try {
+                switch (key) {
+                    case "ai":
+                        if (!Array.isArray(v.decisions))
+                            v.decisions = (v.history || [])
+                                .filter((h) => h.outcome === "WIN" || h.outcome === "LOSS")
+                                .map((h) => h.outcome)
+                                .slice(-20);
+                        ok =
+                            Array.isArray(v.decisions) &&
+                                v.decisions.length <= 20 &&
+                                v.decisions.every((d) => d === "WIN" || d === "LOSS") &&
+                                validNumber(v.g) &&
+                                v.g >= 0.2 &&
+                                v.g <= 0.9 &&
+                                Array.isArray(v.history) &&
+                                v.history.length <= 20 &&
+                                v.history.every((h) => validNumber(h.D) &&
+                                    typeof h.id === "string" &&
+                                    ["WIN", "LOSS", "PUSH", "DRAW", "TIE"].includes(h.outcome) &&
+                                    ["OVER", "UNDER", "Sprint", "Cruise", "Marathon"].includes(h.call)) &&
+                                validNumber(v.hits) &&
+                                validNumber(v.seen) &&
+                                validNumber(v.best);
+                        break;
+                    case "counts":
+                        ok =
+                            validNumber(v.participated) &&
+                                validNumber(v.wins) &&
+                                validNumber(v.losses) &&
+                                validNumber(v.runs) &&
+                                validNumber(v.lastVisit) &&
+                                v.calls &&
+                                Object.values(v.calls).every(validNumber);
+                        break;
+                    case "run":
+                        if (v.lastSeed === undefined) {
+                            v.lastSeed = null;
+                            v.lastSeedType = "WAITING";
+                        }
+                        ok =
+                            (v.lastSeed === null || typeof v.lastSeed === "string") &&
+                                ["WAITING", "LOCAL", "SEPOLIA"].includes(v.lastSeedType) &&
+                                typeof v.id === "string" &&
+                                typeof v.active === "boolean" &&
+                                Number.isInteger(v.lives) &&
+                                v.lives >= 0 &&
+                                v.lives <= 3 &&
+                                [
+                                    "streak",
+                                    "best",
+                                    "damage",
+                                    "multiplier",
+                                    "live",
+                                    "practice",
+                                    "started",
+                                ].every((k) => validNumber(v[k])) &&
+                                v.ready &&
+                                ["Shield", "Double Down", "Insight"].every((k) => validNumber(v.ready[k]));
+                        break;
+                    case "round":
+                        ok =
+                            v === null ||
+                                (typeof v.id === "string" &&
+                                    ["PREDICT", "WAIT", "REPLAY", "RESULT", "RUN_OVER"].includes(v.phase) &&
+                                    validNumber(v.deadline) &&
+                                    validNumber(v.started) &&
+                                    Number.isInteger(v.A) &&
+                                    v.env &&
+                                    ["LIVE MOVING", "LIVE STILL", "PRACTICE"].includes(v.env.mode) &&
+                                    validNumber(v.env.rpm) &&
+                                    validNumber(v.env.M) &&
+                                    typeof v.week === "string" &&
+                                    [
+                                        null,
+                                        "OVER",
+                                        "UNDER",
+                                        "Sprint",
+                                        "Cruise",
+                                        "Marathon",
+                                    ].includes(v.call) &&
+                                    [null, "Shield", "Double Down", "Insight"].includes(v.booster) &&
+                                    (v.seed === null || typeof v.seed === "string") &&
+                                    (v.race === null ||
+                                        (validNumber(v.race.D) &&
+                                            Array.isArray(v.race.ticks) &&
+                                            v.race.ticks.length === 24 &&
+                                            v.race.ticks.every((t) => Number.isFinite(t.v) && t.v >= 0.6 && t.v <= 6))) &&
+                                    typeof v.applied === "boolean");
+                        break;
+                    case "applied":
+                        ok =
+                            Array.isArray(v) &&
+                                v.length <= 256 &&
+                                v.every((x) => typeof x === "string");
+                        break;
+                    case "boss":
+                        ok =
+                            v &&
+                                Object.keys(v).length <= 8 &&
+                                Object.entries(v).every(([k, b]) => /^\d{4}-W\d{2}$/.test(k) &&
+                                    validNumber(b.hp) &&
+                                    b.hp <= 50000);
+                        break;
+                    case "art":
+                        ok =
+                            Array.isArray(v) &&
+                                v.length <= 100 &&
+                                v.reduce((s, g) => s + g.primitives.length, 0) <= 2000 &&
+                                v.every((g) => typeof g.id === "string" &&
+                                    g.primitives.every((p) => Array.isArray(p) &&
+                                        p.length === 8 &&
+                                        p.every(Number.isFinite)));
+                        break;
+                    case "top10":
+                        ok =
+                            Array.isArray(v) &&
+                                v.length <= 10 &&
+                                v.every((r) => validNumber(r.score) &&
+                                    validNumber(r.best) &&
+                                    typeof r.name === "string" &&
+                                    r.name.length <= 42 &&
+                                    typeof r.date === "string");
+                        break;
+                    case "dialogue":
+                        ok =
+                            v &&
+                                typeof v === "object" &&
+                                Object.values(v).every((x) => Array.isArray(x) &&
+                                    x.length <= 12 &&
+                                    x.every(Number.isInteger));
+                        break;
+                    case "name":
+                        ok = typeof v === "string" && v.length <= 20;
+                }
+            }
+            catch {
+                ok = false;
+            }
+            if (ok)
+                state[key] = v;
+            else
+                recovered.push(key);
+        }
+        if (recovered.includes("run"))
+            state.round = null;
+        return { state, recovered };
+    }
+    Squeek.recover = recover;
+    function makeRound(state, id, now, env, random) {
+        const w = week(now);
+        if (!state.boss[w])
+            state.boss[w] = { hp: 50000 };
+        const keys = Object.keys(state.boss).sort();
+        while (keys.length > 8)
+            delete state.boss[keys.shift()];
+        state.run.multiplier = Math.max(state.run.multiplier, Squeek.loot(state.boss[w].hp));
+        return {
+            id,
+            phase: "PREDICT",
+            deadline: now + 12000,
+            started: now,
+            replayStart: 0,
+            pausedAt: null,
+            call: null,
+            booster: null,
+            ...predict(state.ai, random),
+            env: { ...env },
+            week: w,
+            target: null,
+            baseBlock: null,
+            seed: null,
+            seedType: "WAITING",
+            race: null,
+            applied: false,
+            outcome: null,
+            damage: 0,
+            n: state.counts.participated + 1,
+            skipped: false,
+        };
+    }
+    Squeek.makeRound = makeRound;
+    function canCall(r, call) {
+        return (["OVER", "UNDER", "Sprint", "Cruise", "Marathon"].includes(call) &&
+            !(call === r.aiZone));
+    }
+    Squeek.canCall = canCall;
+    function available(state, b) {
+        return state.counts.participated + 1 >= state.run.ready[b];
+    }
+    Squeek.available = available;
+    function lock(state, now) {
+        const r = state.round;
+        if (!r || r.phase !== "PREDICT")
+            return false;
+        if (!r.call) {
+            r.skipped = true;
+            r.phase = "RESULT";
+            r.deadline = now + 4000;
+            return false;
+        }
+        if (!canCall(r, r.call))
+            return false;
+        if (r.booster) {
+            if (!available(state, r.booster)) {
+                r.booster = null;
+            }
+            else {
+                const c = r.booster === "Shield" ? r.env.cooldown : 3;
+                state.run.ready[r.booster] = r.n + c + 1;
+            }
+        }
+        r.phase = "WAIT";
+        r.deadline = now + 45000;
+        return true;
+    }
+    Squeek.lock = lock;
+    function seedRound(r, seed, type, now) {
+        if (r.phase !== "WAIT" || r.seed !== null)
+            return false;
+        r.seed = seed;
+        r.seedType = type;
+        r.race = race(seed);
+        r.phase = "REPLAY";
+        r.replayStart = now;
+        r.deadline = now + 6000;
+        return true;
+    }
+    Squeek.seedRound = seedRound;
+    function artGroup(r) {
+        const random = rng("art|" + r.seed + "|" + r.env.epoch + "|" + r.env.work);
+        const primitives = [];
+        const density = 10 + Math.round(Math.min(r.env.rpm, 180) / 3);
+        const angle = random() * Math.PI * 2;
+        for (let i = 0; i < density; i++) {
+            const a = angle + i * 0.2, rad = 0.08 + random() * 0.38;
+            const x = 0.5 + Math.cos(a) * rad, y = 0.5 + Math.sin(a) * rad;
+            const mode = r.race?.ticks[i % 24]?.burst
+                ? 2
+                : r.env.mode === "PRACTICE"
+                    ? 2
+                    : r.env.mode === "LIVE STILL"
+                        ? 1
+                        : i % 4;
+            primitives.push([
+                mode,
+                x,
+                y,
+                0.008 + random() * 0.04,
+                a,
+                random(),
+                r.outcome === "WIN" ? 1 : 0,
+                0.2 + random() * 0.6,
+            ]);
+        }
+        return { id: r.id, primitives };
+    }
+    Squeek.artGroup = artGroup;
+    function finishRun(state, now) {
+        const run = state.run;
+        if (run.logged)
+            return;
+        run.logged = true;
+        run.active = false;
+        state.counts.runs++;
+        state.top10.push({
+            id: run.id,
+            score: Squeek.score(run),
+            date: new Date(now).toISOString(),
+            name: state.name || "GUEST",
+            best: run.best,
+            damage: run.damage,
+        });
+        state.top10.sort((a, b) => b.score - a.score || b.best - a.best || a.date.localeCompare(b.date));
+        state.top10 = state.top10.slice(0, 10);
+    }
+    Squeek.finishRun = finishRun;
+    function settle(state, now) {
+        const r = state.round;
+        if (!r?.race || !r.call || r.applied || state.applied.includes(r.id))
+            return false;
+        const run = state.run;
+        run.lastSeed = r.seed;
+        run.lastSeedType = r.seedType;
+        r.outcome = resolve(r.call, r.race.D, r.A);
+        r.applied = true;
+        state.applied.push(r.id);
+        state.applied = state.applied.slice(-256);
+        const b = state.boss[r.week] || (state.boss[r.week] = { hp: 50000 });
+        run.multiplier = Math.max(run.multiplier, Squeek.loot(b.hp));
+        if (r.outcome === "WIN") {
+            run.streak++;
+            run.best = Math.max(run.best, run.streak);
+            state.ai.best = Math.max(state.ai.best, run.best);
+            const damage = Math.round(r.race.D *
+                (1 + 0.1 * Math.min(run.streak, 10)) *
+                r.env.M *
+                (r.booster === "Double Down" ? 2 : 1));
+            r.damage = Math.min(b.hp, damage);
+            b.hp -= r.damage;
+            run.damage += r.damage;
+            state.counts.wins++;
+        }
+        else if (r.outcome === "LOSS") {
+            run.streak = 0;
+            run.lives = Math.max(0, run.lives -
+                (r.booster === "Shield" ? 0 : r.booster === "Double Down" ? 2 : 1));
+            state.counts.losses++;
+        }
+        run.multiplier = Math.max(run.multiplier, Squeek.loot(b.hp));
+        if (r.env.mode === "PRACTICE")
+            run.practice++;
+        else
+            run.live++;
+        state.counts.participated++;
+        state.counts.calls[r.call] = (state.counts.calls[r.call] || 0) + 1;
+        const aiHit = r.race.zone === r.aiZone;
+        state.ai.hits += aiHit ? 1 : 0;
+        state.ai.seen++;
+        state.ai.history.push({
+            id: r.id,
+            D: r.race.D,
+            call: r.call,
+            outcome: r.outcome,
+            aiHit,
+            live: r.env.mode !== "PRACTICE",
+            at: now,
+            seedType: r.seedType,
+        });
+        state.ai.history = state.ai.history.slice(-20);
+        if (r.outcome === "WIN" || r.outcome === "LOSS") {
+            state.ai.decisions.push(r.outcome);
+            state.ai.decisions = state.ai.decisions.slice(-20);
+            adapt(state.ai);
+        }
+        state.art.push(artGroup(r));
+        while (state.art.reduce((s, g) => s + g.primitives.length, 0) > 2000 ||
+            state.art.length > 100)
+            state.art.shift();
+        r.phase = "RESULT";
+        r.deadline = now + 4000;
+        if (run.lives === 0) {
+            finishRun(state, now);
+            r.phase = "RUN_OVER";
+        }
+        return true;
+    }
+    Squeek.settle = settle;
+    function pause(r, now) {
+        if (r && r.pausedAt === null)
+            r.pausedAt = now;
+    }
+    Squeek.pause = pause;
+    function resume(r, now) {
+        if (r && r.pausedAt !== null) {
+            const d = Math.max(0, now - r.pausedAt);
+            r.deadline += d;
+            r.started += d;
+            if (r.replayStart)
+                r.replayStart += d;
+            r.pausedAt = null;
+        }
+    }
+    Squeek.resume = resume;
+    function formatUnits(hex, decimals) {
+        if (!/^0x[0-9a-fA-F]{64}$/.test(hex))
+            throw Error("Invalid balance");
+        const v = BigInt(hex);
+        if (decimals === null)
+            return v.toString() + " raw units";
+        if (!Number.isInteger(decimals) || decimals < 0 || decimals > 255)
+            throw Error("Invalid decimals");
+        const div = 10n ** BigInt(decimals), whole = v / div;
+        const frac = (v % div)
+            .toString()
+            .padStart(decimals, "0")
+            .slice(0, 4)
+            .replace(/0+$/, "");
+        return whole.toString() + (frac ? "." + frac : "") + " SQK";
+    }
+    Squeek.formatUnits = formatUnits;
+    function transfer(account) {
+        if (!/^0x[0-9a-fA-F]{40}$/.test(account))
+            throw Error("Invalid sender");
+        const data = "0xa9059cbb" +
+            account.slice(2).toLowerCase().padStart(64, "0") +
+            "0".repeat(64);
+        if (data.length !== 138)
+            throw Error("Invalid transfer length");
+        return { from: account, to: Squeek.PIN.token, data, value: "0x0" };
+    }
+    Squeek.transfer = transfer;
+    function classify(error) {
+        const code = error?.code, msg = String(error?.message || error);
+        if (code === 4001)
+            return "Request rejected. You can keep playing.";
+        if (code === -32002)
+            return "A wallet request is already open. Check your wallet.";
+        if (/insufficient|funds/i.test(msg))
+            return "Not enough test ETH for gas. Add Sepolia test ETH, then try again.";
+        if (/revert|execution|false/i.test(msg))
+            return "Contract simulation failed. Nothing was sent.";
+        return "Network or wallet unavailable. Check your connection and try again.";
+    }
+    Squeek.classify = classify;
+    function calibrate() {
+        const zones = { Sprint: 0, Cruise: 0, Marathon: 0 }, tiers = { LOW: 0, MID: 0, HIGH: 0 };
+        let min = Infinity, max = 0;
+        for (let i = 0; i < 10000; i++) {
+            const r = race("calib-" + i);
+            zones[r.zone]++;
+            tiers[r.tier]++;
+            min = Math.min(min, r.D);
+            max = Math.max(max, r.D);
+        }
+        return {
+            samples: 10000,
+            zones,
+            tiers,
+            min,
+            max,
+            withinTarget: [...Object.values(zones), ...Object.values(tiers)].every((n) => n >= 2500 && n <= 4000),
+        };
+    }
+    Squeek.calibrate = calibrate;
+})(Squeek || (Squeek = {}));
+/** Browser adapter. Runtime is vanilla JS, Canvas and Web Audio; all resources are inline. */
+var SqueekApp;
+(function (SqueekApp) {
+    const E = Squeek, P = E.PIN;
+    const $ = (id) => document.getElementById(id);
+    const text = (id, value) => {
+        const el = $(id);
+        const s = String(value);
+        if (el.textContent !== s)
+            el.textContent = s;
+    };
+    const show = (id, yes) => ($(id).hidden = !yes);
+    const button = (id) => $(id);
+    const clone = (value) => JSON.parse(JSON.stringify(value));
+    let sessionOnly = false;
+    const ram = {};
+    const storage = {
+        get(key) {
+            try {
+                return localStorage.getItem(key) ?? ram[key] ?? null;
+            }
+            catch {
+                sessionOnly = true;
+                return ram[key] ?? null;
+            }
+        },
+        set(key, value) {
+            ram[key] = value;
+            try {
+                localStorage.setItem(key, value);
+            }
+            catch {
+                sessionOnly = true;
+            }
+        },
+    };
+    const parse = (v) => {
+        try {
+            return v ? JSON.parse(v) : null;
+        }
+        catch {
+            return null;
+        }
+    };
+    const now = () => Date.now();
+    const randomHex = () => {
+        const a = new Uint8Array(32);
+        crypto.getRandomValues(a);
+        return ("0x" + Array.from(a, (x) => x.toString(16).padStart(2, "0")).join(""));
+    };
+    const random = () => {
+        const a = new Uint32Array(1);
+        crypto.getRandomValues(a);
+        return a[0] / 4294967296;
+    };
+    const id = () => randomHex();
+    const rawState = storage.get("squeek.state.v3");
+    const parsedState = parse(rawState);
+    const saved = E.recover(parsedState, now());
+    if (rawState && !parsedState)
+        saved.recovered.push("state (invalid JSON)");
+    let state = saved.state;
+    const returned = now() - state.counts.lastVisit > 86400000;
+    state.counts.lastVisit = now();
+    const rawSettings = parse(storage.get("squeek.settings.v3"));
+    const settings = {
+        theme: rawSettings?.theme === "charcoal" ? "charcoal" : "cream",
+        mute: rawSettings?.mute !== false,
+        tutorial: rawSettings?.tutorial === true,
+    };
+    let manuallyPaused = false, visibilityGeneration = 0, apiStatus = null, economyValue = null, economyCheck = "unavailable";
+    let current = E.telemetry(null, now()), statusFailure = 0, economyFailure = 0, statusNext = 0, economyNext = 0, statusBusy = false, economyBusy = false;
+    let seedBusy = false, seedNext = 0, seedFailures = 0, roundNumber = state.counts.participated + 1;
+    let audio = null, pngURL = null, lastFrame = 0, lastScene = 0, mode = "duel";
+    let helpPaused = false, lastPhase = "", lastArt = "", lastRecords = "", lastRoundSaved = 0;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const active = () => !document.hidden && !manuallyPaused && !helpPaused;
+    function save() {
+        state.counts.lastVisit = now();
+        storage.set("squeek.state.v3", JSON.stringify(state));
+        if (sessionOnly) {
+            text("storageNotice", "Session only: browser storage is unavailable. Keep this tab open to keep your run.");
+            show("storageNotice", true);
+        }
+    }
+    function saveSettings() {
+        storage.set("squeek.settings.v3", JSON.stringify(settings));
+        if (sessionOnly)
+            save();
+    }
+    function announce(message) {
+        text("announcer", message);
+    }
+    function applyTheme() {
+        document.documentElement.classList.add("theme-changing");
+        document.documentElement.dataset.theme = settings.theme;
+        button("themeBtn").setAttribute("aria-label", settings.theme === "cream" ? "Use charcoal theme" : "Use cream theme");
+        document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", settings.theme === "cream" ? "#f4f0e7" : "#222420");
+        requestAnimationFrame(() => document.documentElement.classList.remove("theme-changing"));
+    }
+    function sound(freq = 330, win = false) {
+        if (settings.mute || !active())
+            return;
+        try {
+            if (!audio)
+                return;
+            const o = audio.createOscillator(), g = audio.createGain();
+            o.type = "square";
+            o.frequency.setValueAtTime(freq, audio.currentTime);
+            o.frequency.exponentialRampToValueAtTime(win ? freq * 1.5 : freq * 0.7, audio.currentTime + 0.1);
+            g.gain.setValueAtTime(0.025, audio.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.15);
+            o.connect(g).connect(audio.destination);
+            o.start();
+            o.stop(audio.currentTime + 0.16);
+        }
+        catch { }
+    }
+    function audioGesture() {
+        if (settings.mute || !active())
+            return;
+        try {
+            if (!audio)
+                audio = new AudioContext();
+            void audio.resume();
+        }
+        catch { }
+    }
+    document.addEventListener("pointerdown", audioGesture, { passive: true });
+    document.addEventListener("keydown", audioGesture);
+    function suspend() {
+        visibilityGeneration++;
+        E.pause(state.round, now());
+        save();
+        void audio?.suspend();
+    }
+    function resume() {
+        if (!active())
+            return;
+        E.resume(state.round, now());
+        save();
+        if (!settings.mute && audio)
+            void audio.resume();
+        statusNext = 0;
+        seedNext = 0;
+    }
+    const lines = {
+        first: [
+            "One wheel. Three lives. Your call.",
+            "Welcome to the tiny resistance.",
+            "The wheel is small. Your nerve is not.",
+            "Robo brought maths. You brought instincts.",
+            "Pick a side. Give the wheel a reason.",
+            "A fresh wheel is a beautiful thing.",
+            "The robot has never met your kind of chaos.",
+            "Three lives. Plenty of possibilities.",
+            "Make yourself at home in the wheel.",
+            "The hamster believes in beginners.",
+            "A little courage goes a long way around.",
+            "Your first call starts the story.",
+        ],
+        return: [
+            "Back for another revolution?",
+            "The wheel kept your seat warm.",
+            "Robo missed being challenged. Allegedly.",
+            "Your tiny rival has been waiting.",
+            "Welcome back to the running business.",
+            "The hamster remembers a good teammate.",
+            "Another day, another robot to bother.",
+            "Dust off those prediction skills.",
+            "Fresh eyes. Same determined hamster.",
+            "You and this wheel go way back.",
+            "A familiar face, a new lap.",
+            "The wheel turns better with you here.",
+        ],
+        streak: [
+            "Three in a row. Robo is recalculating.",
+            "Keep that lucky little wheel turning.",
+            "A streak with teeth.",
+            "Robo would like to file a complaint.",
+            "You are becoming a statistical nuisance.",
+            "Momentum looks good on you.",
+            "That is a very confident hamster.",
+            "A hot streak in a small wheel.",
+            "Let the robot worry about the numbers.",
+            "Your calls are finding their rhythm.",
+            "Somebody tell Robo to keep up.",
+            "This wheel runs on confidence.",
+        ],
+        twoLosses: [
+            "Two bumps. Still a wheel.",
+            "Take a breath. Read the call.",
+            "Robo got a couple. You get the next choice.",
+            "A pause can be part of the strategy.",
+            "The wheel has room for a comeback.",
+            "Even good instincts need a warm-up.",
+            "Try another angle around the wheel.",
+            "No shame in a slower lap.",
+            "The next call is a fresh decision.",
+            "The hamster is still on your side.",
+            "A rough patch is not the whole road.",
+            "Let the last two laps go.",
+        ],
+        favourite: [
+            "You have a favourite call. Robo noticed.",
+            "A familiar move. Will it land again?",
+            "Your signature call is getting a reputation.",
+            "Comfort can be a strategy. So can surprise.",
+            "Robo has been counting your habits.",
+            "Your favourite has seen plenty of laps.",
+            "One call keeps finding its way back.",
+            "A signature is only yours to change.",
+            "Patterns make for interesting opponents.",
+            "The wheel recognises your style.",
+            "Robo thinks it knows your next move.",
+            "A familiar path can still surprise.",
+        ],
+        close: [
+            "That one was close enough to squeak.",
+            "A whisker made the difference.",
+            "The wheel barely had room to decide.",
+            "A tiny margin. A very big feeling.",
+            "Robo checked that number twice.",
+            "A finish for the photo album.",
+            "That was a whisker-width duel.",
+            "Sometimes the small numbers matter most.",
+            "The whole wheel held its breath.",
+            "A close call makes a loud squeak.",
+            "Almost side by side at the finish.",
+            "Every little tick counted there.",
+        ],
+        preRound: [
+            "Robo has a number. What is your move?",
+            "Trust your whiskers. Then lock it in.",
+            "Another lap, another little rebellion.",
+            "Read the number. Find your angle.",
+            "The next revolution is yours to call.",
+            "A robot can count. Can it predict you?",
+            "The wheel is ready when you are.",
+            "Tiny feet. Big decisions.",
+            "Place a prediction, not a bet.",
+            "A new call is a clean slate.",
+            "The finish line is still unwritten.",
+            "What do your instincts say?",
+        ],
+        win: [
+            "A clean hit. The wheel approves.",
+            "Robo just lost a little composure.",
+            "That is how you rattle a robot.",
+            "Good call. Great little hamster.",
+            "A win with a side of wheel dust.",
+            "Your instincts just paid in pixels.",
+            "That left a mark on Robo.",
+            "The hamster takes a tiny victory lap.",
+            "One more dent in the machine.",
+            "Robo did not see that coming.",
+            "A small wheel makes a big point.",
+            "Chalk one up for the whiskers.",
+        ],
+        loss: [
+            "A miss. The next call is still yours.",
+            "Robo gets this one. Keep your whiskers up.",
+            "Not every lap goes to plan.",
+            "The wheel wobbles. It does not judge.",
+            "A robot can get lucky too.",
+            "Let that lap become a lesson.",
+            "That one belongs to Robo.",
+            "A little setback, a fresh decision.",
+            "The hamster is rooting for your comeback.",
+            "Read the next number with fresh eyes.",
+            "The wheel keeps the good with the bad.",
+            "Even a miss leaves an interesting mark.",
+        ],
+        lowLives: [
+            "One life. Make it a thoughtful call.",
+            "Shield might be a friend right now.",
+            "A tiny heartbeat is still a heartbeat.",
+            "The last life has plenty of courage.",
+            "Stay calm. The wheel is still yours.",
+            "One more chance to turn things around.",
+            "A careful call can go a long way.",
+            "Robo has not won this run yet.",
+            "Last life. Same determined whiskers.",
+            "You can pause and catch your breath.",
+            "The smallest comeback starts here.",
+            "One life is enough for the next lap.",
+        ],
+    };
+    function say(category) {
+        let used = state.dialogue[category] || [];
+        const previous = used[used.length - 1];
+        if (used.length >= 12)
+            used = [];
+        const choices = lines[category]
+            .map((_, i) => i)
+            .filter((i) => !used.includes(i) && i !== previous);
+        const pick = choices[Math.floor(random() * choices.length)];
+        used.push(pick);
+        state.dialogue[category] = used;
+        text("dialogue", lines[category][pick]);
+    }
+    function preDialogue() {
+        if (state.run.lives === 1)
+            return say("lowLives");
+        if (state.run.streak >= 3)
+            return say("streak");
+        if (state.ai.history.slice(-2).length === 2 &&
+            state.ai.history.slice(-2).every((h) => h.outcome === "LOSS"))
+            return say("twoLosses");
+        const total = Object.values(state.counts.calls).reduce((a, b) => a + b, 0);
+        if (total >= 10 &&
+            Object.values(state.counts.calls).some((n) => n / total > 0.5))
+            return say("favourite");
+        say("preRound");
+    }
+    function refreshEnv() {
+        current = E.telemetry(apiStatus, now(), economyCheck === "mismatch");
+    }
+    function beginRound() {
+        if (!state.run.active)
+            return;
+        refreshEnv();
+        state.round = E.makeRound(state, id(), now(), current, random);
+        roundNumber = state.counts.participated + 1;
+        seedNext = 0;
+        seedFailures = 0;
+        mode = "duel";
+        preDialogue();
+        save();
+        render();
+    }
+    function choose(call) {
+        const r = state.round;
+        if (!r || r.phase !== "PREDICT" || !active() || !E.canCall(r, call))
+            return;
+        r.call = call;
+        save();
+        sound(220);
+        render();
+    }
+    function chooseBooster(b) {
+        const r = state.round;
+        if (!r || r.phase !== "PREDICT" || !active() || !E.available(state, b))
+            return;
+        r.booster = r.booster === b ? null : b;
+        save();
+        render();
+    }
+    function lock() {
+        if (!active())
+            return;
+        const committed = E.lock(state, now());
+        save();
+        if (committed) {
+            announce("Call locked. Waiting for an exact future block, up to 45 seconds.");
+            sound(440);
+            void seedPoll();
+        }
+        render();
+    }
+    async function fetchJSON(url, body) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 4000);
+        try {
+            const response = await fetch(url, {
+                method: body ? "POST" : "GET",
+                body: body ? JSON.stringify(body) : undefined,
+                headers: body ? { "Content-Type": "application/json" } : undefined,
+                signal: controller.signal,
+                cache: "no-store",
+                credentials: "omit",
+                referrerPolicy: "no-referrer",
+            });
+            if (!response.ok) {
+                const e = Error("HTTP " + response.status);
+                const retry = response.headers.get("Retry-After");
+                const seconds = retry ? Number(retry) : NaN;
+                e.retry = Number.isFinite(seconds)
+                    ? E.clamp(seconds * 1000, 2000, 30000)
+                    : retry
+                        ? E.clamp(Date.parse(retry) - now(), 2000, 30000)
+                        : 0;
+                throw e;
+            }
+            return await response.json();
+        }
+        finally {
+            clearTimeout(timer);
+        }
+    }
+    function backoff(f, error) {
+        return Math.max(error?.retry || 0, Math.min(30000, 2000 * 2 ** Math.min(f, 4)));
+    }
+    let rpcIndex = 0, rpcID = 0, rpcNotBefore = 0, rpcFailure = 0;
+    const rpcChains = {};
+    let publicCode = null, publicCodeBusy = false, publicCodeNext = 0;
+    async function rpc(method, params, guard = () => true) {
+        if (now() < rpcNotBefore)
+            throw Error("RPC backoff");
+        let error;
+        for (let attempt = 0; attempt < 3; attempt++) {
+            if (!guard())
+                throw Error("Obsolete request");
+            const endpoint = P.rpcs[(rpcIndex + attempt) % P.rpcs.length];
+            try {
+                if (!rpcChains[endpoint] || now() - rpcChains[endpoint] > 300000) {
+                    const chain = await fetchJSON(endpoint, {
+                        jsonrpc: "2.0",
+                        id: ++rpcID,
+                        method: "eth_chainId",
+                        params: [],
+                    });
+                    if (!guard() ||
+                        typeof chain?.result !== "string" ||
+                        chain.result.toLowerCase() !== P.chain)
+                        throw Error("RPC chain is not verified Sepolia");
+                    rpcChains[endpoint] = now();
+                }
+                const reply = await fetchJSON(endpoint, {
+                    jsonrpc: "2.0",
+                    id: ++rpcID,
+                    method,
+                    params,
+                });
+                if (!guard())
+                    throw Error("Obsolete request");
+                if (reply?.jsonrpc !== "2.0" ||
+                    reply.error ||
+                    !Object.prototype.hasOwnProperty.call(reply, "result"))
+                    throw Error("Unknown RPC response");
+                rpcIndex = (rpcIndex + attempt) % P.rpcs.length;
+                rpcFailure = 0;
+                return reply.result;
+            }
+            catch (e) {
+                error = e;
+                if (e?.retry) {
+                    rpcNotBefore = now() + e.retry;
+                    break;
+                }
+            }
+        }
+        rpcFailure++;
+        rpcNotBefore = now() + backoff(rpcFailure, error);
+        throw error || Error("RPC unavailable");
+    }
+    async function pollPublicCode() {
+        if (publicCodeBusy ||
+            !active() ||
+            now() < publicCodeNext ||
+            state.round?.phase === "WAIT")
+            return;
+        publicCodeBusy = true;
+        const generation = visibilityGeneration;
+        try {
+            const results = [];
+            for (const address of [P.token, P.mining, P.core]) {
+                const code = await rpc("eth_getCode", [address, "latest"], () => active() && generation === visibilityGeneration);
+                results.push(isCode(code));
+            }
+            if (generation !== visibilityGeneration)
+                return;
+            publicCode = results.every(Boolean);
+            publicCodeNext = now() + 300000;
+        }
+        catch {
+            publicCode = null;
+            publicCodeNext = now() + 30000;
+        }
+        finally {
+            publicCodeBusy = false;
+            renderWallet();
+        }
+    }
+    async function pollStatus() {
+        if (statusBusy || !active() || now() < statusNext)
+            return;
+        statusBusy = true;
+        const generation = visibilityGeneration;
+        try {
+            const value = await fetchJSON(P.api + "/v1/status");
+            if (generation !== visibilityGeneration || !active())
+                return;
+            apiStatus = value;
+            statusFailure = 0;
+            statusNext = now() + 5000;
+        }
+        catch (e) {
+            if (generation !== visibilityGeneration)
+                return;
+            apiStatus = null;
+            statusFailure++;
+            statusNext = now() + Math.max(5000, backoff(statusFailure, e));
+        }
+        finally {
+            statusBusy = false;
+            refreshEnv();
+            render();
+        }
+    }
+    async function pollEconomy() {
+        if (economyBusy || !active() || now() < economyNext)
+            return;
+        economyBusy = true;
+        const generation = visibilityGeneration;
+        try {
+            const value = await fetchJSON(P.api + "/v1/economy/state");
+            if (generation !== visibilityGeneration || !active())
+                return;
+            economyValue = value;
+            economyCheck = E.economy(value);
+            economyFailure = 0;
+            economyNext = now() + 30000;
+        }
+        catch (e) {
+            if (generation !== visibilityGeneration)
+                return;
+            economyValue = null;
+            economyCheck = "unavailable";
+            economyFailure++;
+            economyNext = now() + backoff(economyFailure, e);
+        }
+        finally {
+            economyBusy = false;
+            refreshEnv();
+            render();
+        }
+    }
+    async function seedPoll() {
+        const r = state.round;
+        if (seedBusy || !active() || !r || r.phase !== "WAIT" || now() < seedNext)
+            return;
+        if (now() >= r.deadline) {
+            seedLocal(r);
+            return;
+        }
+        seedBusy = true;
+        const rid = r.id, generation = visibilityGeneration;
+        const guard = () => state.round?.id === rid &&
+            state.round.phase === "WAIT" &&
+            state.round.seed === null &&
+            active() &&
+            generation === visibilityGeneration &&
+            now() < r.deadline;
+        try {
+            if (r.target === null) {
+                const latest = await rpc("eth_getBlockByNumber", ["latest", false], guard);
+                if (!guard())
+                    return;
+                if (!latest || !/^0x[0-9a-f]+$/i.test(latest.number))
+                    throw Error("Latest block unknown");
+                r.baseBlock = latest.number;
+                r.target = "0x" + (BigInt(latest.number) + 1n).toString(16);
+                save();
+            }
+            if (!guard())
+                return;
+            const block = await rpc("eth_getBlockByNumber", [r.target, false], guard);
+            if (!guard())
+                return;
+            if (block === null) {
+                seedNext = now() + 4000;
+                return;
+            }
+            if (!block ||
+                typeof block.number !== "string" ||
+                BigInt(block.number) !== BigInt(r.target) ||
+                !/^0x[0-9a-f]{64}$/i.test(block.hash))
+                throw Error("Target block unknown");
+            if (E.seedRound(r, block.hash, "SEPOLIA", now())) {
+                save();
+                announce("Future block received. Race replay started.");
+            }
+            seedFailures = 0;
+        }
+        catch (e) {
+            seedFailures++;
+            seedNext = now() + Math.max(4000, backoff(seedFailures, e));
+        }
+        finally {
+            seedBusy = false;
+            render();
+        }
+    }
+    function seedLocal(r) {
+        if (state.round?.id !== r.id || r.phase !== "WAIT")
+            return;
+        E.seedRound(r, randomHex(), "LOCAL", now());
+        save();
+        announce("Local cryptographic seed selected. Race replay started.");
+        render();
+    }
+    function tick() {
+        if (!active())
+            return;
+        refreshEnv();
+        const r = state.round;
+        if (r) {
+            if (r.phase === "PREDICT" && now() >= r.deadline)
+                lock();
+            else if (r.phase === "WAIT") {
+                if (now() >= r.deadline)
+                    seedLocal(r);
+                else
+                    void seedPoll();
+            }
+            else if (r.phase === "REPLAY" && now() >= r.deadline) {
+                if (E.settle(state, now())) {
+                    const close = r.race && Math.abs(r.race.D - r.A) <= 10;
+                    if (close)
+                        say("close");
+                    else if (r.outcome === "WIN")
+                        say(state.run.streak >= 3 ? "streak" : "win");
+                    else if (r.outcome === "LOSS")
+                        say(state.run.lives === 1 ? "lowLives" : "loss");
+                    else
+                        preDialogue();
+                    text("dialogue", $("dialogue").textContent +
+                        " " +
+                        {
+                            LOW: "A steady little lap.",
+                            MID: "A brisk lap around.",
+                            HIGH: "Those feet found top gear.",
+                        }[r.race.tier]);
+                    save();
+                    announce(`${r.outcome}. Distance ${r.race.D}. ${r.damage} boss damage. ${state.run.lives} lives left.`);
+                    sound(r.outcome === "WIN" ? 550 : 160, r.outcome === "WIN");
+                    void refreshWallet();
+                }
+            }
+            else if (r.phase === "RESULT" && now() >= r.deadline)
+                beginRound();
+            if (now() - lastRoundSaved > 1000) {
+                lastRoundSaved = now();
+                save();
+            }
+        }
+        void pollStatus();
+        void pollEconomy();
+        void pollPublicCode();
+        void receiptPoll();
+        render();
+    }
+    function render() {
+        const r = state.round, run = state.run;
+        text("lives", Array.from({ length: 3 }, (_, i) => (i < run.lives ? "●" : "○")).join(" "));
+        $("lives").setAttribute("aria-label", run.lives + " lives remaining");
+        text("streak", run.streak);
+        text("score", E.score(run).toLocaleString("en-US"));
+        text("pauseBtn", manuallyPaused ? "Resume" : "Pause");
+        text("roundLabel", "Round " + String(roundNumber).padStart(2, "0"));
+        text("wheelStatus", current.mode);
+        $("wheelStatus").classList.toggle("live", current.mode !== "PRACTICE");
+        text("seedBadge", "Seed · " + (r?.seedType || "WAITING"));
+        if (r) {
+            text("aiNumber", r.A);
+            text("aiZone", r.aiZone + " zone");
+            text("multiplier", "Damage ×" + r.env.M.toFixed(3));
+            text("timer", r.phase === "RUN_OVER"
+                ? "End"
+                : manuallyPaused || helpPaused
+                    ? "Paused"
+                    : Math.max(0, Math.ceil((r.deadline - now()) / 1000)) + "s");
+            $("timer").setAttribute("aria-label", Math.max(0, Math.ceil((r.deadline - now()) / 1000)) +
+                " seconds remaining");
+            const titles = {
+                PREDICT: "Make your prediction",
+                WAIT: "Finding your future block",
+                REPLAY: "Let the wheel decide",
+                RESULT: r.skipped
+                    ? "No call. Free skip."
+                    : r.outcome === "WIN"
+                        ? "Good call. Take the hit."
+                        : r.outcome === "LOSS"
+                            ? "Robo wins this one."
+                            : "A neutral finish.",
+                RUN_OVER: "Run over. Wheelprint ready.",
+            };
+            text("phaseTitle", titles[r.phase]);
+            const predicting = r.phase === "PREDICT" && active();
+            for (const b of document.querySelectorAll("[data-call]")) {
+                const c = b.dataset.call;
+                b.disabled = !predicting || !E.canCall(r, c);
+                b.setAttribute("aria-pressed", String(r.call === c));
+            }
+            for (const b of document.querySelectorAll("[data-booster]")) {
+                const booster = b.dataset.booster;
+                b.disabled = !predicting || !E.available(state, booster);
+                b.setAttribute("aria-pressed", String(r.booster === booster));
+                const left = Math.max(0, run.ready[booster] - (state.counts.participated + 1));
+                b.title = left
+                    ? `Ready after ${left} more participated rounds`
+                    : booster === "Shield"
+                        ? `Save lives, not streak. Cooldown ${r.env.cooldown} rounds.`
+                        : booster === "Double Down"
+                            ? "Double damage or lose two lives. Cooldown 3 rounds."
+                            : "Historical spread and AI zone accuracy. Cooldown 3 rounds.";
+                const small = b.querySelector("small");
+                if (small)
+                    small.textContent = left
+                        ? `Resting ${left}`
+                        : booster === "Shield"
+                            ? "Save lives"
+                            : booster === "Double Down"
+                                ? "Double stakes"
+                                : "Read the odds";
+            }
+            show("duelCalls", mode === "duel");
+            show("zoneCalls", mode === "zone");
+            show("zoneHint", mode === "zone");
+            button("duelMode").setAttribute("aria-pressed", String(mode === "duel"));
+            button("zoneMode").setAttribute("aria-pressed", String(mode === "zone"));
+            button("duelMode").disabled = !predicting;
+            button("zoneMode").disabled = !predicting;
+            button("lockBtn").disabled = !predicting || !r.call;
+            text("lockBtn", r.phase === "PREDICT"
+                ? r.call
+                    ? `Lock ${r.call === "OVER" ? "Over" : r.call === "UNDER" ? "Under" : r.call} prediction →`
+                    : "Choose a call to lock in →"
+                : r.phase === "WAIT"
+                    ? "Call locked · waiting for seed"
+                    : r.phase === "REPLAY"
+                        ? "Race in motion"
+                        : r.phase === "RUN_OVER"
+                            ? "Run complete"
+                            : "Next round in a moment");
+            const message = r.phase === "WAIT"
+                ? r.target
+                    ? `Exact target ${BigInt(r.target)}. Local fallback in ${Math.max(0, Math.ceil((r.deadline - now()) / 1000))}s.`
+                    : "Reading the latest block after lock. Local fallback within 45s."
+                : r.phase === "REPLAY"
+                    ? "24 fixed physics ticks. The outcome is already seeded."
+                    : r.phase === "PREDICT"
+                        ? "Virtual distance D decides the duel. Real RPM boosts damage."
+                        : r.skipped
+                            ? "Skips cost no lives or boosters and do not enter history."
+                            : "Lives, boss damage and your wheelprint are saved once.";
+            text("roundMessage", message);
+            show("insight", r.booster === "Insight");
+            text("insight", `Spread σ ${Math.round(r.sigma)} D · ` +
+                (state.ai.seen
+                    ? `Robo zone-hit rate ${Math.round((state.ai.hits / state.ai.seen) * 100)}% (${state.ai.seen} races)`
+                    : "Robo zone-hit rate: no history yet."));
+            show("result", r.applied);
+            if (r.applied)
+                text("result", `${r.outcome} · ${r.race.D} D vs ${r.A} · ${r.race.zone} · ${r.damage.toLocaleString("en-US")} damage`);
+            show("raceReadout", r.phase === "REPLAY" || r.applied);
+            if (r.race && (r.phase === "REPLAY" || r.applied)) {
+                const count = r.phase === "REPLAY"
+                    ? E.clamp(Math.floor((now() - r.replayStart) / 250), 0, 24)
+                    : 24;
+                const distance = r.phase === "REPLAY"
+                    ? Math.round(r.race.ticks.slice(0, count).reduce((a, t) => a + t.v * 5, 0))
+                    : r.race.D;
+                text("raceReadout", `${distance} D · ${r.phase === "REPLAY" ? Math.round((r.race.ticks[Math.max(0, count - 1)]?.v || 3) * 30) : r.race.peakRPM} RPM${r.phase === "REPLAY" ? "" : " peak"}`);
+            }
+            if (lastPhase !== r.id + r.phase) {
+                lastPhase = r.id + r.phase;
+                drawArt();
+            }
+        }
+        const bossWeek = r?.week || E.week(now()), hp = state.boss[bossWeek]?.hp ?? 50000;
+        text("bossWeek", bossWeek);
+        text("bossHP", hp.toLocaleString("en-US"));
+        text("loot", "Loot ×" + E.loot(hp));
+        $("hpFill").style.width = (hp / 50000) * 100 + "%";
+        $("bossProgress").setAttribute("aria-valuenow", String(hp));
+        text("bossStage", hp === 0
+            ? "Defeated. The duels keep going."
+            : hp <= 12500
+                ? "Final circuits. The robot is running hot."
+                : hp <= 25000
+                    ? "Half the machine. Twice the attitude."
+                    : hp <= 37500
+                        ? "The armour is starting to crack."
+                        : "A fresh robot. A whole week of trouble.");
+        const sample = current.observedAt
+            ? `${Math.max(0, Math.round((now() - Date.parse(current.observedAt)) / 1000))}s old`
+            : "no verified sample";
+        text("telemetryCurrent", `Current: ${current.mode} · ${current.rpm.toFixed(3)} RPM · ${sample}. ${current.reason}`);
+        if (r) {
+            const age = r.env.observedAt
+                ? Math.round((now() - Date.parse(r.env.observedAt)) / 1000) +
+                    "s old now"
+                : "practice sample";
+            text("telemetryFrozen", `Frozen for this round: ${r.env.mode} · ${r.env.rpm.toFixed(3)} RPM · ×${r.env.M.toFixed(3)} · ${age}. Frozen at ${new Date(r.env.frozenAt).toISOString()}.`);
+            text("targetInfo", `Block target: ${r.target ? BigInt(r.target).toString() : "not selected"} · seed ${r.seedType}`);
+            text("seedInfo", `Seed hash: ${r.seed || "waiting for lock and a future block"}`);
+        }
+        text("economyState", economyCheck === "match"
+            ? "Economy: installation, release, chain and pinned identities match."
+            : economyCheck === "mismatch"
+                ? "Economy mismatch: live effects and transactions disabled. Pinned addresses unchanged."
+                : "Economy unavailable or unknown. This is not an identity mismatch.");
+        const committed = r?.phase === "WAIT" || r?.phase === "REPLAY";
+        button("endRun").disabled = !!committed || !run.active;
+        button("endRun").title = committed
+            ? "Finish the committed call first."
+            : "";
+        show("newRun", !run.active);
+        button("newRun").disabled = !!committed;
+        show("endRun", run.active);
+        button("clearArt").disabled = r?.phase === "REPLAY";
+        button("exportBtn").disabled =
+            state.run.live + state.run.practice === 0 || r?.phase === "REPLAY";
+        text("artCount", state.art.length
+            ? `${state.art.length} race${state.art.length === 1 ? "" : "s"} in this print`
+            : "Waiting for your first mark");
+        renderRecords();
+        renderWallet();
+    }
+    function renderRecords() {
+        const key = JSON.stringify(state.top10);
+        if (lastRecords === key)
+            return;
+        lastRecords = key;
+        show("recordsTable", state.top10.length > 0);
+        show("recordsEmpty", state.top10.length === 0);
+        const body = $("recordsBody");
+        body.replaceChildren();
+        state.top10.forEach((r) => {
+            const tr = document.createElement("tr");
+            for (const value of [
+                r.name + " · " + r.date.slice(0, 10),
+                String(r.best),
+                r.score.toLocaleString("en-US"),
+            ]) {
+                const td = document.createElement("td");
+                td.textContent = value;
+                tr.append(td);
+            }
+            body.append(tr);
+        });
+    }
+    const spriteCache = new Map();
+    /** A 48×32 logical LED sprite. Four cached gait frames per mood. */
+    function hamster(ctx, x, y, scale, frame, mood) {
+        const cacheKey = `${frame % 4}:${mood}`;
+        const cached = spriteCache.get(cacheKey);
+        ctx.imageSmoothingEnabled = false;
+        if (cached) {
+            ctx.drawImage(cached, x, y, 48 * scale, 32 * scale);
+            return;
+        }
+        const sprite = document.createElement("canvas");
+        sprite.width = 48;
+        sprite.height = 32;
+        const c = sprite.getContext("2d");
+        const px = (a, b, w, h, color) => {
+            c.fillStyle = color;
+            c.fillRect(a, b, w, h);
+        };
+        px(5, 13, 3, 6, "#d58b4b");
+        px(8, 10, 5, 14, "#e4ad6b");
+        px(13, 7, 20, 19, "#edc18a");
+        px(30, 5, 9, 18, "#f6d5a4");
+        px(29, 2, 7, 6, "#d58b4b");
+        px(31, 3, 3, 4, "#f4a38b");
+        px(35, 9, 8, 11, "#f6d5a4");
+        px(41, 14, 4, 4, "#cb754a");
+        px(14, 17, 19, 9, "#f9e9c4");
+        px(34, 10, 3, mood === "sleep" ? 1 : 3, "#292b27");
+        if (mood === "win")
+            px(34, 9, 3, 1, "#292b27");
+        if (mood === "loss") {
+            px(33, 9, 2, 1, "#292b27");
+            px(35, 10, 2, 1, "#292b27");
+        }
+        px(40, 20, 3, 1, "#ad623d");
+        const legs = [
+            [11, 24, 26, 25],
+            [14, 25, 30, 24],
+            [18, 24, 32, 25],
+            [12, 25, 29, 24],
+        ][frame % 4];
+        px(legs[0], legs[1], 7, 3, "#e4ad6b");
+        px(legs[2], legs[3], 7, 3, "#e4ad6b");
+        const led = document.createElement("canvas");
+        led.width = 192;
+        led.height = 128;
+        const pixelsContext = led.getContext("2d");
+        const pixels = c.getImageData(0, 0, 48, 32).data;
+        for (let py = 0; py < 32; py++)
+            for (let px = 0; px < 48; px++) {
+                const j = (py * 48 + px) * 4;
+                if (!pixels[j + 3])
+                    continue;
+                pixelsContext.fillStyle = `rgb(${pixels[j]},${pixels[j + 1]},${pixels[j + 2]})`;
+                pixelsContext.fillRect(px * 4, py * 4, 3.48, 3.48);
+            }
+        spriteCache.set(cacheKey, led);
+        ctx.drawImage(led, x, y, 48 * scale, 32 * scale);
+    }
+    function robot(ctx, x, y, s, hit = false) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(s, s);
+        const block = (x, y, w, h, color) => {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        };
+        const body = hit ? "#f8b67e" : "#d57943";
+        block(15, 0, 3, 7, body);
+        block(13, 0, 7, 3, "#eebc82");
+        block(5, 8, 24, 19, body);
+        block(1, 12, 4, 11, body);
+        block(29, 12, 4, 11, body);
+        block(8, 26, 6, 5, body);
+        block(21, 26, 6, 5, body);
+        block(8, 12, 18, 10, "#383b32");
+        block(10, 14, 5, 4, hit ? "#fff6da" : "#faac71");
+        block(20, 14, 4, 4, "#faac71");
+        block(13, 24, 8, 2, "#383b32");
+        ctx.restore();
+    }
+    function drawArena(time) {
+        const canvas = $("arena");
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(devicePixelRatio || 1, 3);
+        const w = Math.max(1, Math.round(rect.width * dpr)), h = Math.max(1, Math.round(rect.height * dpr));
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+        }
+        const c = canvas.getContext("2d");
+        c.setTransform(w / 900, 0, 0, h / 400, 0, 0);
+        c.fillStyle = "#292b27";
+        c.fillRect(0, 0, 900, 400);
+        c.fillStyle = "#484a3e";
+        for (let x = 22; x < 900; x += 18)
+            for (let y = 16; y < 400; y += 18)
+                c.fillRect(x, y, 1, 1);
+        const r = state.round;
+        const replay = r?.phase === "REPLAY" && r.race;
+        const motion = active() && !reduced.matches;
+        const angle = motion ? time / (replay ? 850 : 7000) : 0;
+        const cx = 265, cy = 190, R = 145;
+        c.strokeStyle = "#77735b";
+        c.lineWidth = 3;
+        c.beginPath();
+        c.arc(cx, cy, R + 9, 0, Math.PI * 2);
+        c.stroke();
+        c.strokeStyle = "#cf8d50";
+        c.lineWidth = 6;
+        c.beginPath();
+        c.arc(cx, cy, R, 0, Math.PI * 2);
+        c.stroke();
+        c.strokeStyle = "#6b6a53";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(cx, cy, R - 13, 0, Math.PI * 2);
+        c.stroke();
+        c.save();
+        c.translate(cx, cy);
+        c.rotate(angle);
+        for (let i = 0; i < 24; i++) {
+            c.rotate(Math.PI / 12);
+            c.strokeStyle = i % 3 === 0 ? "#a69268" : "#69674f";
+            c.beginPath();
+            c.moveTo(R - 14, 0);
+            c.lineTo(R - 2, 0);
+            c.stroke();
+        }
+        c.restore();
+        c.strokeStyle = "#77735b";
+        c.lineWidth = 5;
+        c.beginPath();
+        c.moveTo(230, 340);
+        c.lineTo(265, 280);
+        c.lineTo(300, 340);
+        c.stroke();
+        c.fillStyle = "#a38b62";
+        c.fillRect(212, 340, 110, 5);
+        c.save();
+        c.beginPath();
+        c.arc(cx, cy, R - 17, 0, Math.PI * 2);
+        c.clip();
+        c.fillStyle = "#36392e";
+        c.fillRect(125, 275, 280, 30);
+        c.strokeStyle = "#645b42";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.moveTo(140, 280);
+        c.lineTo(390, 280);
+        c.stroke();
+        const frame = motion
+            ? (replay
+                ? Math.floor((now() - (r?.replayStart || 0)) / 100)
+                : Math.floor(time / 260)) % 4
+            : 0;
+        hamster(c, 190, 173, 3.25, frame, r?.outcome === "WIN"
+            ? "win"
+            : r?.outcome === "LOSS"
+                ? "loss"
+                : current.mode === "LIVE STILL"
+                    ? "sleep"
+                    : "normal");
+        c.restore();
+        c.strokeStyle = "#8f886b";
+        c.setLineDash([3, 9]);
+        c.lineWidth = 2;
+        c.beginPath();
+        c.moveTo(455, 210);
+        c.lineTo(595, 210);
+        c.stroke();
+        c.setLineDash([]);
+        c.fillStyle = "#c7b18d";
+        c.font = "16px monospace";
+        c.textAlign = "center";
+        c.fillText("VS", 525, 190);
+        const hit = r?.applied &&
+            r.outcome === "WIN" &&
+            motion &&
+            now() - r.deadline + 4000 < 700;
+        const bob = motion ? Math.floor(Math.sin(time / 800) * 2) : 0;
+        robot(c, 650, 115 + bob, 5, !!hit);
+        if (hit) {
+            c.strokeStyle = "#f8bd7b";
+            for (let i = 0; i < 8; i++) {
+                const a = (i * Math.PI) / 4;
+                c.beginPath();
+                c.moveTo(730 + Math.cos(a) * 100, 200 + Math.sin(a) * 90);
+                c.lineTo(730 + Math.cos(a) * 118, 200 + Math.sin(a) * 107);
+                c.stroke();
+            }
+        }
+        c.fillStyle = "#3a3d32";
+        c.fillRect(625, 300, 220, 6);
+        c.fillStyle = "#bcb08c";
+        c.font = "12px monospace";
+        c.textAlign = "center";
+        c.fillText("VIRTUAL RACE / REAL NERVE", 450, 380);
+    }
+    function paintArt(c, x, y, size) {
+        c.save();
+        c.translate(x, y);
+        c.scale(size, size);
+        c.fillStyle = "#e7d5b0";
+        c.fillRect(0, 0, 1, 1);
+        c.lineWidth = 0.0015;
+        c.strokeStyle = "#bc9d70";
+        for (let i = 0; i < 7; i++) {
+            c.beginPath();
+            c.arc(0.5, 0.5, 0.08 + i * 0.057, 0, Math.PI * 2);
+            c.stroke();
+        }
+        for (let i = 0; i < 32; i++) {
+            const a = (i * Math.PI) / 16;
+            c.beginPath();
+            c.moveTo(0.5 + Math.cos(a) * 0.07, 0.5 + Math.sin(a) * 0.07);
+            c.lineTo(0.5 + Math.cos(a) * 0.425, 0.5 + Math.sin(a) * 0.425);
+            c.stroke();
+        }
+        c.strokeStyle = "#514a38";
+        c.lineWidth = 0.003;
+        c.beginPath();
+        c.arc(0.5, 0.5, 0.437, 0, Math.PI * 2);
+        c.stroke();
+        c.fillStyle = "#b4572c";
+        c.beginPath();
+        c.arc(0.5, 0.5, 0.025, 0, Math.PI * 2);
+        c.fill();
+        for (const group of state.art) {
+            for (const p of group.primitives) {
+                const [kind, px, py, s, a, hue, win, alpha] = p;
+                c.globalAlpha = alpha;
+                c.fillStyle = win ? "#b24f26" : hue > 0.5 ? "#403e31" : "#a07745";
+                c.strokeStyle = c.fillStyle;
+                c.lineWidth = 0.002 + Math.min(s / 8, 0.004);
+                c.save();
+                c.translate(px, py);
+                c.rotate(a);
+                if (kind === 0) {
+                    c.beginPath();
+                    c.moveTo(0, 0);
+                    c.lineTo(s * 2, s);
+                    c.lineTo(s * 3, 0);
+                    c.stroke();
+                }
+                else if (kind === 1) {
+                    c.strokeRect(-s / 2, -s / 2, s, s);
+                }
+                else if (kind === 2) {
+                    c.beginPath();
+                    c.arc(0, 0, s, 0, Math.PI * 2);
+                    c.stroke();
+                }
+                else {
+                    c.beginPath();
+                    c.moveTo(0, -s);
+                    c.lineTo(s / 2, s);
+                    c.lineTo(-s / 2, s);
+                    c.closePath();
+                    c.fill();
+                }
+                c.restore();
+            }
+        }
+        c.globalAlpha = 1;
+        c.fillStyle = "#594b37";
+        if (!state.art.length) {
+            c.fillStyle = "#e7d5b0";
+            c.fillRect(0.2, 0.69, 0.6, 0.06);
+            c.fillStyle = "#594b37";
+        }
+        c.restore();
+        c.save();
+        c.fillStyle = "#594b37";
+        c.font = `${size * 0.018}px monospace`;
+        c.textAlign = "left";
+        c.fillText("SQK / WHEELPRINT", x + size * 0.04, y + size * 0.055);
+        c.textAlign = "right";
+        c.fillText(String(state.art.length).padStart(3, "0"), x + size * 0.96, y + size * 0.96);
+        if (!state.art.length) {
+            c.font = `${size * 0.027}px Arial`;
+            c.textAlign = "center";
+            c.fillText("Your races leave a trace.", x + size * 0.5, y + size * 0.73);
+        }
+        c.restore();
+    }
+    function drawArt() {
+        const key = JSON.stringify(state.art);
+        if (lastArt === key)
+            return;
+        lastArt = key;
+        const canvas = $("art");
+        const dpr = Math.min(devicePixelRatio || 1, 3), size = Math.round(Math.max(300, canvas.getBoundingClientRect().width) * dpr);
+        canvas.width = size;
+        canvas.height = size;
+        paintArt(canvas.getContext("2d"), 0, 0, size);
+    }
+    function animation(time) {
+        if (!document.hidden && time - lastFrame >= (reduced.matches ? 500 : 50)) {
+            if (active() || time - lastScene > 500) {
+                drawArena(time);
+                lastScene = time;
+            }
+            lastFrame = time;
+        }
+        requestAnimationFrame(animation);
+    }
+    async function exportPNG() {
+        if (state.run.live + state.run.practice === 0 ||
+            state.round?.phase === "REPLAY")
+            return;
+        const c = document.createElement("canvas");
+        c.width = c.height = 1080;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#f4f0e7";
+        ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = "#2c2923";
+        ctx.font = "600 32px Arial";
+        ctx.fillText("Squeek Survival / Wheelprint", 48, 62);
+        ctx.font = "20px Arial";
+        ctx.fillText(state.name || wallet.account || "GUEST", 48, 96);
+        ctx.textAlign = "right";
+        ctx.fillText("Score " + E.score(state.run), 1032, 62);
+        ctx.fillText(new Date().toISOString().slice(0, 10) + " UTC", 1032, 96);
+        ctx.textAlign = "left";
+        paintArt(ctx, 180, 118, 720);
+        ctx.font = "600 24px Arial";
+        ctx.fillStyle = "#2c2923";
+        ctx.fillText(`Streak ${state.run.streak} / Best ${state.run.best} / Damage ${state.run.damage}`, 48, 883);
+        ctx.font = "20px Arial";
+        ctx.fillText(`Live ${state.run.live} / Practice ${state.run.practice} / Seed ${state.run.lastSeedType}`, 48, 925);
+        ctx.font = "18px monospace";
+        ctx.fillText(state.run.lastSeed || "No settled seed in this run.", 48, 960);
+        ctx.font = "18px Arial";
+        ctx.fillStyle = "#71695c";
+        ctx.fillText("Virtual races. Local cosmetic scores. No token rewards.", 48, 1024);
+        ctx.font = "16px Arial";
+        ctx.fillText("squeek / Keep the wheel alive.", 48, 1053);
+        button("exportBtn").disabled = true;
+        try {
+            const blob = await new Promise((resolve, reject) => c.toBlob((b) => (b ? resolve(b) : reject(Error("PNG encoding failed"))), "image/png"));
+            if (pngURL)
+                URL.revokeObjectURL(pngURL);
+            pngURL = URL.createObjectURL(blob);
+            $("pngPreview").src = pngURL;
+            $("pngDownload").href = pngURL;
+            openDialog("previewDialog");
+            announce("Your 1080 by 1080 PNG is ready to download.");
+        }
+        catch {
+            text("storageNotice", "PNG export failed in this browser. Try again after the round settles.");
+            show("storageNotice", true);
+        }
+        finally {
+            render();
+        }
+    }
+    const savedTx = parse(storage.get("squeek.tx.v3"));
+    const txValid = savedTx &&
+        /^0x[0-9a-fA-F]{40}$/.test(savedTx.sender) &&
+        savedTx.chain === P.chain &&
+        ["pending", "confirmed", "failed", "unknown"].includes(savedTx.status) &&
+        (savedTx.hash === null || /^0x[0-9a-fA-F]{64}$/.test(savedTx.hash));
+    let tx = txValid
+        ? {
+            ...savedTx,
+            visibleMs: Number.isFinite(savedTx.visibleMs) ? savedTx.visibleMs : 0,
+            lastCheck: 0,
+        }
+        : null;
+    let receiptBusy = false, receiptNext = 0, receiptFailure = 0, receiptClock = now();
+    const wallet = {
+        provider: null,
+        account: null,
+        chain: null,
+        verified: false,
+        balance: "Unknown",
+        busy: false,
+        sending: false,
+        generation: 0,
+    };
+    const providers = new Map();
+    function saveTx() {
+        storage.set("squeek.tx.v3", JSON.stringify(tx));
+        if (sessionOnly)
+            save();
+    }
+    const isCode = (c) => typeof c === "string" && /^0x[0-9a-f]+$/i.test(c) && !/^0x0*$/i.test(c);
+    const validWord = (v) => typeof v === "string" && /^0x[0-9a-fA-F]{64}$/.test(v);
+    /** Same guarded wallet path is used by isolated mock tests. Never retries a send. */
+    async function performTransfer(provider, account, guard, onSending) {
+        const transaction = E.transfer(account);
+        const check = async () => {
+            if (!guard())
+                throw Error("Account or chain changed");
+            const [accounts, chain] = await Promise.all([
+                provider.request({ method: "eth_accounts" }),
+                provider.request({ method: "eth_chainId" }),
+            ]);
+            if (!guard() ||
+                !Array.isArray(accounts) ||
+                accounts[0]?.toLowerCase() !== account.toLowerCase() ||
+                chain?.toLowerCase() !== P.chain)
+                throw Error("Account or chain changed");
+        };
+        await check();
+        const codes = await Promise.all([P.token, P.core, P.mining].map((address) => provider.request({
+            method: "eth_getCode",
+            params: [address, "latest"],
+        })));
+        if (!codes.every(isCode))
+            throw Error("Pinned contract code unavailable");
+        if (!guard())
+            throw Error("Account or chain changed");
+        const simulation = await provider.request({
+            method: "eth_call",
+            params: [transaction, "latest"],
+        });
+        if (simulation !== "0x" + "0".repeat(63) + "1")
+            throw Error("Contract simulation returned false or unknown");
+        if (!guard())
+            throw Error("Account or chain changed");
+        const estimate = await provider.request({
+            method: "eth_estimateGas",
+            params: [transaction],
+        });
+        if (typeof estimate !== "string" ||
+            !/^0x[0-9a-f]+$/i.test(estimate) ||
+            BigInt(estimate) <= 0n)
+            throw Error("Gas estimate unavailable");
+        await check();
+        if (!guard())
+            throw Error("Account or chain changed");
+        onSending();
+        const hash = await provider.request({
+            method: "eth_sendTransaction",
+            params: [transaction],
+        });
+        if (!/^0x[0-9a-fA-F]{64}$/.test(hash))
+            throw Object.assign(Error("Wallet returned unknown transaction hash"), {
+                sendUnknown: true,
+            });
+        return hash;
+    }
+    function renderWallet() {
+        const connectControl = button("connectBtn");
+        if (wallet.account) {
+            connectControl.dataset.guest = "false";
+            connectControl.removeAttribute("aria-label");
+            text("connectBtn", wallet.chain !== P.chain
+                ? "Switch to Sepolia"
+                : wallet.account.slice(0, 6) + "…" + wallet.account.slice(-4));
+        }
+        else if (connectControl.dataset.guest !== "true") {
+            const desktopLabel = document.createElement("span");
+            desktopLabel.className = "desktop-only";
+            desktopLabel.textContent = " wallet";
+            connectControl.replaceChildren(document.createTextNode("Connect"), desktopLabel);
+            connectControl.setAttribute("aria-label", "Connect wallet");
+            connectControl.dataset.guest = "true";
+        }
+        text("walletAccount", wallet.account || "");
+        text("walletBalance", "SQK balance · " + wallet.balance);
+        text("codeStatus", wallet.verified
+            ? "Wallet verified Sepolia and code at all three pins. MINING / CORE are display-only."
+            : publicCode === true
+                ? "Public RPC verified Sepolia and code at all three pins. Connect to verify your wallet."
+                : publicCode === false
+                    ? "Pinned contract code is missing. Transactions stay disabled."
+                    : "Pinned contract code is unverified. Transactions stay disabled.");
+        show("switchChain", !!wallet.account && wallet.chain !== P.chain);
+        show("disconnectBtn", !!wallet.account);
+        button("connectBtn").disabled = wallet.busy;
+        const unresolved = tx?.status === "pending" || tx?.status === "unknown";
+        const cooldown = tx &&
+            (tx.status === "confirmed" || tx.status === "failed") &&
+            now() - tx.terminalAt < 15000;
+        button("sendBtn").disabled =
+            state.counts.participated < 1 ||
+                !wallet.account ||
+                wallet.chain !== P.chain ||
+                !wallet.verified ||
+                economyCheck === "mismatch" ||
+                wallet.sending ||
+                !!unresolved ||
+                !!cooldown;
+        text("txHint", state.counts.participated < 1
+            ? "Unlocks after one settled participated round."
+            : unresolved
+                ? "A previous send is unresolved. Check its status before sending again."
+                : cooldown
+                    ? "Please wait " +
+                        Math.ceil((15000 - (now() - tx.terminalAt)) / 1000) +
+                        "s before another test."
+                    : !wallet.account
+                        ? "Connect a wallet to send this optional test."
+                        : wallet.chain !== P.chain
+                            ? "Switch explicitly to Sepolia to continue."
+                            : economyCheck === "mismatch"
+                                ? "Disabled: economy identity mismatch."
+                                : !wallet.verified
+                                    ? "Waiting for verified contract code."
+                                    : "Optional test only. Gameplay continues during confirmation.");
+        show("checkTx", !!unresolved);
+        if (tx) {
+            const node = $("txStatus");
+            const key = [
+                tx.status,
+                tx.hash,
+                Math.floor(tx.visibleMs / 1000 / 180),
+                tx.sender,
+            ].join("|");
+            if (node.dataset.key !== key) {
+                node.dataset.key = key;
+                node.replaceChildren();
+                const p = document.createElement("p");
+                p.textContent = `${tx.status === "unknown" ? "Unknown send outcome" : tx.status === "pending" ? (tx.visibleMs >= 180000 ? "Still pending after 3 visible minutes" : "Transaction pending") : tx.status === "confirmed" ? "Transaction confirmed" : "Transaction failed"} · sender ${tx.sender}`;
+                node.append(p);
+                if (tx.hash) {
+                    const a = document.createElement("a");
+                    a.href = P.explorer + "/tx/" + tx.hash;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    a.textContent = tx.hash + " · View on Etherscan";
+                    node.append(a);
+                }
+                else {
+                    const p2 = document.createElement("p");
+                    p2.textContent =
+                        "No hash was returned. Inspect this sender’s Sepolia activity before any further test.";
+                    const a = document.createElement("a");
+                    a.href = P.explorer + "/address/" + tx.sender;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    a.textContent = "Inspect sender on Etherscan";
+                    node.append(p2, a);
+                }
+            }
+        }
+    }
+    async function providerRequest(provider, method, params) {
+        return provider.request({ method, params });
+    }
+    async function refreshWallet() {
+        const p = wallet.provider, account = wallet.account, generation = wallet.generation;
+        if (!p || !account)
+            return;
+        const guard = () => wallet.provider === p &&
+            wallet.account === account &&
+            wallet.generation === generation;
+        try {
+            const chain = await providerRequest(p, "eth_chainId");
+            if (!guard())
+                return;
+            wallet.chain = typeof chain === "string" ? chain.toLowerCase() : null;
+            wallet.verified = false;
+            wallet.balance = "Unknown";
+            if (wallet.chain !== P.chain)
+                return;
+            const codes = await Promise.all([P.token, P.mining, P.core].map((a) => providerRequest(p, "eth_getCode", [a, "latest"])));
+            if (!guard())
+                return;
+            wallet.verified = codes.every(isCode);
+            let balance = null, decimals = null;
+            const reads = await Promise.allSettled([
+                providerRequest(p, "eth_call", [
+                    {
+                        to: P.token,
+                        data: "0x70a08231" + account.slice(2).toLowerCase().padStart(64, "0"),
+                    },
+                    "latest",
+                ]),
+                providerRequest(p, "eth_call", [
+                    { to: P.token, data: "0x313ce567" },
+                    "latest",
+                ]),
+            ]);
+            if (!guard())
+                return;
+            if (reads[0].status === "fulfilled" && validWord(reads[0].value))
+                balance = reads[0].value;
+            if (reads[1].status === "fulfilled" && validWord(reads[1].value)) {
+                const d = BigInt(reads[1].value);
+                if (d <= 255n)
+                    decimals = Number(d);
+            }
+            wallet.balance = balance ? E.formatUnits(balance, decimals) : "Unknown";
+        }
+        catch {
+            if (guard()) {
+                wallet.verified = false;
+                wallet.balance = "Unknown";
+            }
+        }
+        finally {
+            renderWallet();
+        }
+    }
+    const accountsChanged = (accounts) => {
+        wallet.generation++;
+        wallet.account =
+            Array.isArray(accounts) && /^0x[0-9a-fA-F]{40}$/.test(accounts[0])
+                ? accounts[0]
+                : null;
+        wallet.verified = false;
+        wallet.balance = "Unknown";
+        if (wallet.account && $("walletDialog").open)
+            closeDialog("walletDialog");
+        renderWallet();
+        void refreshWallet();
+    };
+    const chainChanged = (chain) => {
+        wallet.generation++;
+        wallet.chain = typeof chain === "string" ? chain.toLowerCase() : null;
+        wallet.verified = false;
+        wallet.balance = "Unknown";
+        renderWallet();
+        void refreshWallet();
+    };
+    function attach(p) {
+        if (wallet.provider) {
+            wallet.provider.removeListener?.("accountsChanged", accountsChanged);
+            wallet.provider.removeListener?.("chainChanged", chainChanged);
+        }
+        wallet.provider = p;
+        wallet.generation++;
+        p.on?.("accountsChanged", accountsChanged);
+        p.on?.("chainChanged", chainChanged);
+    }
+    async function connect(p) {
+        if (wallet.busy)
+            return;
+        wallet.busy = true;
+        text("chooserMessage", "Check your wallet to connect.");
+        renderWallet();
+        try {
+            attach(p);
+            const generation = wallet.generation;
+            const accounts = await p.request({ method: "eth_requestAccounts" });
+            if (generation !== wallet.generation)
+                return;
+            if (!Array.isArray(accounts) || !/^0x[0-9a-fA-F]{40}$/.test(accounts[0]))
+                throw Error("No valid account");
+            wallet.account = accounts[0];
+            text("walletMessage", "Wallet connected. Guest run preserved.");
+            closeDialog("walletDialog");
+            await refreshWallet();
+        }
+        catch (e) {
+            text("chooserMessage", E.classify(e));
+            text("walletMessage", E.classify(e));
+        }
+        finally {
+            wallet.busy = false;
+            renderWallet();
+        }
+    }
+    async function switchChain() {
+        const p = wallet.provider;
+        if (!p || wallet.busy)
+            return;
+        wallet.busy = true;
+        renderWallet();
+        try {
+            try {
+                await p.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: P.chain }],
+                });
+            }
+            catch (e) {
+                if (e?.code !== 4902)
+                    throw e;
+                await p.request({
+                    method: "wallet_addEthereumChain",
+                    params: [
+                        {
+                            chainId: P.chain,
+                            chainName: "Sepolia",
+                            nativeCurrency: {
+                                name: "Sepolia ETH",
+                                symbol: "ETH",
+                                decimals: 18,
+                            },
+                            rpcUrls: [...P.rpcs],
+                            blockExplorerUrls: [P.explorer],
+                        },
+                    ],
+                });
+            }
+            await refreshWallet();
+        }
+        catch (e) {
+            text("walletMessage", E.classify(e));
+        }
+        finally {
+            wallet.busy = false;
+            renderWallet();
+        }
+    }
+    function walletChooser() {
+        const list = $("walletList");
+        list.replaceChildren();
+        const found = [...providers.values()];
+        const fallback = window.ethereum;
+        if (!found.length && fallback?.request)
+            found.push({ name: "Browser wallet", icon: "", provider: fallback });
+        for (const entry of found) {
+            const b = document.createElement("button");
+            b.className = "wallet-row";
+            if (entry.icon.startsWith("data:image/") && entry.icon.length < 100000) {
+                const img = document.createElement("img");
+                img.src = entry.icon;
+                img.alt = "";
+                img.width = img.height = 28;
+                b.append(img);
+            }
+            const span = document.createElement("span");
+            span.textContent = entry.name.slice(0, 80);
+            b.append(span);
+            b.onclick = () => void connect(entry.provider);
+            list.append(b);
+        }
+        show("noWallet", !found.length);
+        text("chooserMessage", "");
+        openDialog("walletDialog");
+    }
+    window.addEventListener("eip6963:announceProvider", (event) => {
+        const d = event.detail;
+        if (d?.info &&
+            typeof d.info.uuid === "string" &&
+            typeof d.info.name === "string" &&
+            d.provider?.request) {
+            providers.set(d.info.uuid, {
+                name: d.info.name,
+                icon: typeof d.info.icon === "string" ? d.info.icon : "",
+                provider: d.provider,
+            });
+            if ($("walletDialog").open)
+                walletChooser();
+        }
+    });
+    window.dispatchEvent(new Event("eip6963:requestProvider"));
+    async function sendTest() {
+        if (button("sendBtn").disabled || wallet.sending)
+            return;
+        const p = wallet.provider, account = wallet.account;
+        if (!p || !account)
+            return;
+        wallet.sending = true;
+        const generation = wallet.generation;
+        const guard = () => wallet.provider === p &&
+            wallet.account === account &&
+            wallet.generation === generation &&
+            economyCheck !== "mismatch" &&
+            wallet.chain === P.chain;
+        let crossedSend = false;
+        renderWallet();
+        text("walletMessage", "Simulating the exact zero SQK self-transfer…");
+        try {
+            const hash = await performTransfer(p, account, guard, () => {
+                crossedSend = true;
+                tx = {
+                    hash: null,
+                    sender: account,
+                    chain: P.chain,
+                    status: "unknown",
+                    visibleMs: 0,
+                    terminalAt: 0,
+                    lastCheck: 0,
+                };
+                saveTx();
+                text("walletMessage", "Confirm the zero SQK test in your wallet.");
+            });
+            tx = {
+                hash,
+                sender: account,
+                chain: P.chain,
+                status: "pending",
+                visibleMs: 0,
+                terminalAt: 0,
+                lastCheck: 0,
+            };
+            receiptClock = now();
+            receiptNext = 0;
+            saveTx();
+            text("walletMessage", "Transaction sent. You can keep playing.");
+            void receiptPoll();
+        }
+        catch (e) {
+            if (crossedSend) {
+                const code = e?.code;
+                const msg = String(e?.message || e);
+                if (code === 4001 || /revert|insufficient funds/i.test(msg)) {
+                    tx = {
+                        hash: null,
+                        sender: account,
+                        chain: P.chain,
+                        status: "failed",
+                        visibleMs: 0,
+                        terminalAt: now(),
+                        lastCheck: 0,
+                    };
+                    saveTx();
+                }
+                else {
+                    text("walletMessage", "Send outcome unknown. No automatic retry. Check this sender on Etherscan.");
+                }
+            }
+            if (!crossedSend || tx?.status === "failed")
+                text("walletMessage", E.classify(e));
+        }
+        finally {
+            wallet.sending = false;
+            renderWallet();
+            void refreshWallet();
+        }
+    }
+    async function receiptPoll(force = false) {
+        if (!tx || !active())
+            return;
+        const t = now();
+        if (tx.status === "pending") {
+            tx.visibleMs += Math.min(1000, Math.max(0, t - receiptClock));
+            receiptClock = t;
+        }
+        else
+            receiptClock = t;
+        if (receiptBusy ||
+            !tx.hash ||
+            !["pending", "unknown"].includes(tx.status) ||
+            (!force && (now() < receiptNext || tx.visibleMs >= 180000)))
+            return;
+        receiptBusy = true;
+        const hash = tx.hash;
+        const generation = visibilityGeneration;
+        try {
+            const receipt = await rpc("eth_getTransactionReceipt", [hash], () => active() && tx?.hash === hash && generation === visibilityGeneration);
+            if (!active() || tx?.hash !== hash || generation !== visibilityGeneration)
+                return;
+            if (receipt !== null &&
+                (!receipt ||
+                    !["0x1", "0x0"].includes(receipt.status) ||
+                    receipt.transactionHash?.toLowerCase() !== hash.toLowerCase()))
+                throw Error("Unknown receipt");
+            if (receipt) {
+                tx.status = receipt.status === "0x1" ? "confirmed" : "failed";
+                tx.terminalAt = now();
+                announce("Test transaction " + tx.status);
+                void refreshWallet();
+            }
+            tx.lastCheck = now();
+            receiptFailure = 0;
+            receiptNext = now() + 4000;
+            saveTx();
+        }
+        catch (e) {
+            receiptFailure++;
+            receiptNext = now() + Math.max(4000, backoff(receiptFailure, e));
+        }
+        finally {
+            receiptBusy = false;
+            renderWallet();
+        }
+    }
+    const triggers = new Map();
+    function openDialog(name) {
+        const d = $(name);
+        if (d.open)
+            return;
+        triggers.set(name, document.activeElement);
+        if (name === "helpDialog") {
+            helpPaused = true;
+            suspend();
+        }
+        d.showModal();
+    }
+    function closeDialog(name) {
+        const d = $(name);
+        d.close();
+    }
+    document.querySelectorAll("dialog").forEach((d) => {
+        d.querySelector(".close-dialog")?.addEventListener("click", () => d.close());
+        d.addEventListener("click", (e) => {
+            if (e.target === d) {
+                const rect = d.getBoundingClientRect();
+                const m = e;
+                if (m.clientX < rect.left ||
+                    m.clientX > rect.right ||
+                    m.clientY < rect.top ||
+                    m.clientY > rect.bottom)
+                    d.close();
+            }
+        });
+        d.addEventListener("close", () => {
+            if (d.id === "helpDialog") {
+                helpPaused = false;
+                settings.tutorial = true;
+                saveSettings();
+                resume();
+            }
+            if (d.id === "previewDialog" && pngURL) {
+                $("pngPreview").removeAttribute("src");
+                URL.revokeObjectURL(pngURL);
+                pngURL = null;
+            }
+            triggers.get(d.id)?.focus();
+        });
+    });
+    function confirmAction(title, description, label, action) {
+        text("confirmTitle", title);
+        text("confirmText", description);
+        text("confirmAction", label);
+        button("confirmAction").onclick = () => {
+            action();
+            closeDialog("confirmDialog");
+        };
+        openDialog("confirmDialog");
+    }
+    button("helpBtn").onclick = () => openDialog("helpDialog");
+    button("rulesBtn").onclick = () => openDialog("helpDialog");
+    button("startPlaying").onclick = () => closeDialog("helpDialog");
+    button("themeBtn").onclick = () => {
+        settings.theme = settings.theme === "cream" ? "charcoal" : "cream";
+        applyTheme();
+        saveSettings();
+    };
+    button("soundBtn").onclick = () => {
+        settings.mute = !settings.mute;
+        button("soundBtn").setAttribute("aria-label", settings.mute ? "Sound off" : "Sound on");
+        button("soundBtn").setAttribute("aria-pressed", String(!settings.mute));
+        button("soundBtn").title = settings.mute ? "Sound off" : "Sound on";
+        saveSettings();
+        if (settings.mute)
+            void audio?.suspend();
+        else {
+            audioGesture();
+            sound(440, true);
+        }
+    };
+    button("pauseBtn").onclick = () => {
+        manuallyPaused = !manuallyPaused;
+        if (manuallyPaused)
+            suspend();
+        else
+            resume();
+        render();
+        announce(manuallyPaused ? "Game paused." : "Game resumed.");
+    };
+    document
+        .querySelectorAll("[data-call]")
+        .forEach((b) => (b.onclick = () => choose(b.dataset.call)));
+    document
+        .querySelectorAll("[data-booster]")
+        .forEach((b) => (b.onclick = () => chooseBooster(b.dataset.booster)));
+    button("duelMode").onclick = () => {
+        mode = "duel";
+        render();
+    };
+    button("zoneMode").onclick = () => {
+        mode = "zone";
+        render();
+    };
+    button("lockBtn").onclick = lock;
+    button("retryNetwork").onclick = () => {
+        statusNext = economyNext = publicCodeNext = rpcNotBefore = seedNext = 0;
+        statusFailure = economyFailure = 0;
+        void pollStatus();
+        void pollEconomy();
+        void seedPoll();
+    };
+    button("endRun").onclick = () => {
+        if (state.round?.phase === "WAIT" || state.round?.phase === "REPLAY")
+            return;
+        confirmAction("End this run?", "Your current score will be recorded on this device. The weekly boss and Robo’s memory carry on.", "End run & save record", () => {
+            if (state.round?.phase === "WAIT" || state.round?.phase === "REPLAY")
+                return;
+            E.finishRun(state, now());
+            if (state.round)
+                state.round.phase = "RUN_OVER";
+            save();
+            render();
+        });
+    };
+    button("newRun").onclick = () => {
+        if (state.round?.phase === "WAIT" || state.round?.phase === "REPLAY")
+            return;
+        state.run = E.newRun(id(), now(), E.loot(state.boss[E.week(now())]?.hp ?? 50000));
+        state.art = [];
+        lastArt = "";
+        manuallyPaused = false;
+        beginRound();
+        drawArt();
+    };
+    button("resetAI").onclick = () => confirmAction("Reset Robo’s memory?", "This clears learning and AI accuracy. Your current frozen call, committed result, lives, raid and records remain.", "Reset memory", () => {
+        state.ai = {
+            g: 0.5,
+            history: [],
+            decisions: [],
+            hits: 0,
+            seen: 0,
+            best: state.ai.best,
+        };
+        save();
+        render();
+    });
+    button("clearArt").onclick = () => {
+        if (state.round?.phase === "REPLAY")
+            return;
+        confirmAction("Start a new canvas?", "This clears the wheelprint only. Your run, settled calls and records remain.", "Clear canvas", () => {
+            if (state.round?.phase === "REPLAY")
+                return;
+            state.art = [];
+            lastArt = "";
+            save();
+            drawArt();
+            render();
+        });
+    };
+    $("playerName").value = state.name;
+    $("playerName").addEventListener("input", (e) => {
+        state.name = e.target.value.slice(0, 20);
+        save();
+    });
+    button("exportBtn").onclick = () => void exportPNG();
+    button("connectBtn").onclick = () => {
+        if (wallet.account && wallet.chain !== P.chain)
+            void switchChain();
+        else
+            walletChooser();
+    };
+    button("switchChain").onclick = () => void switchChain();
+    button("disconnectBtn").onclick = () => {
+        wallet.generation++;
+        if (wallet.provider) {
+            wallet.provider.removeListener?.("accountsChanged", accountsChanged);
+            wallet.provider.removeListener?.("chainChanged", chainChanged);
+        }
+        wallet.provider = null;
+        wallet.account = null;
+        wallet.chain = null;
+        wallet.verified = false;
+        wallet.balance = "Unknown";
+        text("walletMessage", "Disconnected. Your game continues.");
+        renderWallet();
+    };
+    button("sendBtn").onclick = () => void sendTest();
+    button("checkTx").onclick = () => {
+        receiptNext = rpcNotBefore = 0;
+        void receiptPoll(true);
+    };
+    for (const [name, address] of [
+        ["SQK", P.token],
+        ["MINING · display only", P.mining],
+        ["CORE · display only", P.core],
+    ]) {
+        const a = document.createElement("a");
+        a.href = P.explorer + "/address/" + address;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = name + " · " + address;
+        $("contractLinks").append(a);
+    }
+    document.addEventListener("keydown", (e) => {
+        const target = e.target;
+        if (target.matches("input,textarea,select,button,a,summary") ||
+            document.querySelector("dialog[open]"))
+            return;
+        const calls = {
+            "1": "OVER",
+            "2": "UNDER",
+            "3": "Sprint",
+            "4": "Cruise",
+            "5": "Marathon",
+        };
+        if (calls[e.key]) {
+            e.preventDefault();
+            mode = ["1", "2"].includes(e.key) ? "duel" : "zone";
+            choose(calls[e.key]);
+        }
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (state.round?.call)
+                lock();
+        }
+        if (e.key.toLowerCase() === "p") {
+            e.preventDefault();
+            button("pauseBtn").click();
+        }
+    });
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden)
+            suspend();
+        else {
+            receiptClock = now();
+            resume();
+            tick();
+        }
+    });
+    window.addEventListener("pagehide", () => {
+        suspend();
+        saveTx();
+        if (pngURL)
+            URL.revokeObjectURL(pngURL);
+    });
+    window.addEventListener("resize", () => {
+        lastArt = "";
+        drawArt();
+        drawArena(performance.now());
+    });
+    /** Isolated test access: pure mechanics and fresh in-memory state only. Never uses app storage/provider. */
+    window.__squeekTest = Object.freeze({
+        mechanics: Object.freeze({ ...E }),
+        createSandbox(seed = "test", at = Date.UTC(2026, 9, 26)) {
+            let clock = at;
+            const sandbox = E.initial(clock);
+            sandbox.run = E.newRun("test-run", clock);
+            const fakeRandom = E.rng("ai|" + seed);
+            return {
+                state: sandbox,
+                now: () => clock,
+                advance: (ms) => (clock += ms),
+                begin: (sample = null) => {
+                    sandbox.round = E.makeRound(sandbox, "test-" + clock, clock, E.telemetry(sample, clock), fakeRandom);
+                    return sandbox.round;
+                },
+                lock: () => E.lock(sandbox, clock),
+                seed: (hash = seed) => sandbox.round && E.seedRound(sandbox.round, hash, "LOCAL", clock),
+                settle: () => E.settle(sandbox, clock),
+                reload: () => E.recover(clone(sandbox), clock).state,
+            };
+        },
+        async mockWallet(script = {}, changeAt = "") {
+            const calls = [];
+            const account = "0x" + "12".repeat(20);
+            let valid = true;
+            const provider = {
+                async request(args) {
+                    calls.push(clone(args));
+                    if (args.method === changeAt)
+                        valid = false;
+                    if (args.method in script) {
+                        const v = script[args.method];
+                        if (v?.error)
+                            throw v.error;
+                        return v;
+                    }
+                    if (args.method === "eth_accounts")
+                        return [account];
+                    if (args.method === "eth_chainId")
+                        return P.chain;
+                    if (args.method === "eth_getCode")
+                        return "0x60016000";
+                    if (args.method === "eth_call")
+                        return "0x" + "0".repeat(63) + "1";
+                    if (args.method === "eth_estimateGas")
+                        return "0x1234";
+                    if (args.method === "eth_sendTransaction")
+                        return "0x" + "ab".repeat(32);
+                    throw Error("Unexpected mock request");
+                },
+            };
+            try {
+                return {
+                    hash: await performTransfer(provider, account, () => valid, () => { }),
+                    calls,
+                    error: null,
+                };
+            }
+            catch (error) {
+                return {
+                    hash: null,
+                    calls,
+                    error: String(error.message),
+                    classification: E.classify(error),
+                };
+            }
+        },
+        readSnapshot: () => clone({
+            phase: state.round?.phase,
+            mode: current.mode,
+            economy: economyCheck,
+            round: state.round,
+            run: state.run,
+            counts: state.counts,
+            art: state.art.length,
+        }),
+        sessionOnly: () => sessionOnly,
+    });
+    window.__calibrate = () => E.calibrate();
+    if (new URLSearchParams(location.search).get("debug") === "1") {
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.textContent = "Debug · read-only state";
+        const pre = document.createElement("pre");
+        pre.style.cssText =
+            "white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px";
+        details.append(summary, pre);
+        $("game").append(details);
+        setInterval(() => {
+            if (active() && details.open)
+                pre.textContent = JSON.stringify({
+                    phase: state.round?.phase,
+                    current,
+                    economy: economyCheck,
+                    seed: state.round?.seedType,
+                    target: state.round?.target,
+                    g: state.ai.g,
+                    storage: sessionOnly ? "RAM" : "local",
+                    roundApplied: state.round?.applied,
+                }, null, 2);
+        }, 1000);
+    }
+    applyTheme();
+    button("soundBtn").setAttribute("aria-label", settings.mute ? "Sound off" : "Sound on");
+    button("soundBtn").setAttribute("aria-pressed", String(!settings.mute));
+    if (state.round)
+        E.resume(state.round, now());
+    if (!state.round && state.run.active)
+        beginRound();
+    if (state.counts.participated === 0)
+        say("first");
+    else if (returned)
+        say("return");
+    else
+        preDialogue();
+    if (saved.recovered.length) {
+        text("storageNotice", "Recovered damaged local sections: " +
+            saved.recovered.join(", ") +
+            ". Valid sections were preserved.");
+        show("storageNotice", true);
+    }
+    save();
+    render();
+    drawArena(0);
+    drawArt();
+    requestAnimationFrame(animation);
+    setInterval(tick, 100);
+    tick();
+})(SqueekApp || (SqueekApp = {}));
+
+    </script>
+  </body>
+</html>
